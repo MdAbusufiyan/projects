@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Live Preview — {{ exam.title }}{% endblock %}
+{% block content %}
+<div class="watermark"><span>Professor live preview</span></div>
+<div class="exam-topbar">
+  <div>{{ exam.title }}</div>
+  <div class="exam-timer">{{ '%02d'|format(exam.duration_minutes) }}:00</div>
+  <div>Preview mode</div>
+</div>
+<div class="q-palette" id="q-palette"></div>
+<div class="exam-room-wrap {{ 'no-pdf' if not exam.case_study_pdf else '' }}">
+  <div class="mcq-pane">
+    {% if not questions %}<p>No questions have been added yet.</p>{% endif %}
+    {% for q in questions %}
+    <div class="question-block" data-qindex="{{ loop.index0 }}" style="{{ '' if loop.first else 'display:none;' }}">
+      <div class="q-index">Question {{ loop.index }} of {{ questions|length }} ({{ q.marks }} marks)</div>
+      <div class="q-text">{{ q.question_text }}</div>
+      <div class="options">
+        {% for key, text in [('a', q.option_a), ('b', q.option_b), ('c', q.option_c), ('d', q.option_d)] %}
+        {% if text %}<div class="option-item"><input type="radio" name="q_{{ q.id }}" value="{{ key }}"><label>{{ key|upper }}) {{ text }}</label></div>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% if exam.case_study_pdf %}<div class="pdf-pane"><iframe class="case-study-frame" title="Case study PDF" src="{{ url_for('professor.case_study_pdf', exam_id=exam.id) }}"></iframe></div>{% endif %}
+</div>
+<div class="exam-nav">
+  <a class="btn btn-outline" href="{{ url_for('professor.edit_exam', exam_id=exam.id) }}">Exit Preview</a>
+  <div><button class="btn btn-outline" id="previous">Previous</button> <button class="btn btn-primary" id="next">Next</button></div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+(() => {
+  const blocks = [...document.querySelectorAll('.question-block')];
+  const palette = document.getElementById('q-palette');
+  let current = 0;
+  function show(index) {
+    if (index < 0 || index >= blocks.length) return;
+    current = index;
+    blocks.forEach((block, i) => block.style.display = i === current ? '' : 'none');
+    [...palette.children].forEach((dot, i) => dot.classList.toggle('current', i === current));
+  }
+  blocks.forEach((block, index) => {
+    const dot = document.createElement('div');
+    dot.className = 'q-dot' + (index === 0 ? ' current' : '');
+    dot.textContent = index + 1;
+    dot.onclick = () => show(index);
+    palette.appendChild(dot);
+    block.querySelectorAll('.option-item').forEach(option => option.onclick = () => {
+      block.querySelectorAll('.option-item').forEach(item => item.classList.remove('selected'));
+      option.classList.add('selected');
+      option.querySelector('input').checked = true;
+      dot.classList.add('answered');
+    });
+  });
+  document.getElementById('previous').onclick = () => show(current - 1);
+  document.getElementById('next').onclick = () => show(current + 1);
+})();
+</script>
+{% endblock %}

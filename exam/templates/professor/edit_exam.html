@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% block title %}Edit Exam{% endblock %}
+{% block content %}
+{% include 'partials/professor_topbar.html' %}
+<div class="container">
+  <div class="page-header">
+    <h1>{{ exam.title }} <span class="badge badge-{{ exam.status }}">{{ exam.status }}</span></h1>
+    <p>Workflow: review content → preview as a candidate → add candidates → schedule or go live.</p>
+    <a class="btn btn-primary" href="{{ url_for('professor.preview_exam', exam_id=exam.id) }}">Review Questions &amp; Answers</a>
+    <a class="btn btn-secondary" href="{{ url_for('professor.live_preview', exam_id=exam.id) }}" target="_blank" rel="noopener">Preview Live Test</a>
+  </div>
+
+  <div class="card">
+    <h3>Live-test protections</h3>
+    <p class="text-muted">Enable only the restrictions needed for this exam. The live preview does not enforce them, so you can safely check the candidate experience.</p>
+    <form method="POST" action="{{ url_for('professor.update_anti_cheat', exam_id=exam.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-row">
+        <div>
+          {% for f, label in [('disable_copy','Disable Copy'),('disable_paste','Disable Paste'),('disable_right_click','Disable Right Click'),('disable_refresh','Disable Refresh'),('disable_printing','Disable Printing'),('disable_drag_drop','Disable Drag & Drop')] %}
+          <div class="checkbox-row"><input type="checkbox" name="{{ f }}" {% if exam.anti_cheat and exam.anti_cheat|attr(f) %}checked{% endif %}> {{ label }}</div>
+          {% endfor %}
+        </div>
+        <div>
+          {% for f, label in [('disable_text_selection','Disable Text Selection'),('require_fullscreen','Require Fullscreen'),('detect_tab_switch','Detect Tab Switching'),('detect_window_blur','Detect Window Blur'),('detect_fullscreen_exit','Detect Fullscreen Exit'),('detect_multiple_login','Detect Multiple Login')] %}
+          <div class="checkbox-row"><input type="checkbox" name="{{ f }}" {% if exam.anti_cheat and exam.anti_cheat|attr(f) %}checked{% endif %}> {{ label }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group"><label>Max Warnings</label><input type="number" name="max_warnings" min="1" value="{{ exam.anti_cheat.max_warnings if exam.anti_cheat else 3 }}"></div>
+        <div class="form-group"><label>Max Tab Switches</label><input type="number" name="max_tab_switches" min="1" value="{{ exam.anti_cheat.max_tab_switches if exam.anti_cheat else 3 }}"></div>
+        <div class="form-group"><label>Max Seconds Outside</label><input type="number" name="max_seconds_outside" min="5" value="{{ exam.anti_cheat.max_seconds_outside if exam.anti_cheat else 30 }}"></div>
+      </div>
+      <div class="form-group"><label>Violation Action</label><select name="violation_action"><option value="warning" {% if exam.anti_cheat and exam.anti_cheat.violation_action == 'warning' %}selected{% endif %}>Warning Only</option><option value="auto_submit" {% if exam.anti_cheat and exam.anti_cheat.violation_action == 'auto_submit' %}selected{% endif %}>Auto Submit</option><option value="terminate" {% if exam.anti_cheat and exam.anti_cheat.violation_action == 'terminate' %}selected{% endif %}>Terminate Exam</option></select></div>
+      <button class="btn btn-primary" type="submit">Save Live-test Settings</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Case Study Material</h3>
+    {% if exam.case_study_pdf %}
+      <p>Your case-study PDF is shown below.</p>
+      <iframe class="case-study-frame" title="Case study PDF" src="{{ url_for('professor.case_study_pdf', exam_id=exam.id) }}"></iframe>
+    {% else %}
+      <p class="text-muted">No case study PDF was uploaded.</p>
+    {% endif %}
+    <p class="text-muted" style="margin-top:16px;">Imported MCQs appear below and in Preview, where their answer keys and validation are visible.</p>
+    {% if exam.status == 'draft' %}
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('professor.import_mcq_pdf', exam_id=exam.id) }}" style="margin-top:16px;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Import or re-import MCQ PDF</label>
+        <input type="file" name="mcq_pdf" accept="application/pdf" required>
+      </div>
+      <div class="checkbox-row"><input type="checkbox" name="replace_questions"> Replace the current questions before importing</div>
+      <button type="submit" class="btn btn-secondary">Import MCQ PDF</button>
+    </form>
+    {% endif %}
+  </div>
+
+  <div class="card">
+    <h3>Questions ({{ questions|length }})</h3>
+    <div id="question-list">
+      {% for q in questions %}
+      <div class="question-editor" data-qid="{{ q.id }}">
+        <strong>Q{{ loop.index }}.</strong> {{ q.question_text }}
+        <ul>
+          <li>A) {{ q.option_a }}{% if q.correct_option == 'a' %} ✓{% endif %}</li>
+          <li>B) {{ q.option_b }}{% if q.correct_option == 'b' %} ✓{% endif %}</li>
+          {% if q.option_c %}<li>C) {{ q.option_c }}{% if q.correct_option == 'c' %} ✓{% endif %}</li>{% endif %}
+          {% if q.option_d %}<li>D) {{ q.option_d }}{% if q.correct_option == 'd' %} ✓{% endif %}</li>{% endif %}
+        </ul>
+        <button class="btn btn-sm btn-danger delete-question" data-exam="{{ exam.id }}" data-qid="{{ q.id }}">Delete</button>
+      </div>
+      {% endfor %}
+    </div>
+
+    <h4>Add Question Manually</h4>
+    <form id="add-question-form">
+      <div class="form-group"><label>Question Text</label><textarea id="q_text" rows="2"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label>Option A</label><input id="q_a"></div>
+        <div class="form-group"><label>Option B</label><input id="q_b"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Option C (optional)</label><input id="q_c"></div>
+        <div class="form-group"><label>Option D (optional)</label><input id="q_d"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Correct Option</label>
+          <select id="q_correct"><option value="a">A</option><option value="b">B</option><option value="c">C</option><option value="d">D</option></select>
+        </div>
+        <div class="form-group"><label>Marks</label><input id="q_marks" type="number" value="1" step="0.5"></div>
+      </div>
+      <button type="button" id="add-question-btn" class="btn btn-primary" data-exam="{{ exam.id }}">Add Question</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Candidates ({{ candidates|length }} / {{ exam.max_candidates }})</h3>
+    <table class="data-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for c in candidates %}
+        <tr><td>{{ c.name }}</td><td>{{ c.email }}</td><td>{{ c.status }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h4>Add Candidates</h4>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('professor.add_candidates', exam_id=exam.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div id="manual-candidates">
+        <div class="form-row">
+          <div class="form-group"><input name="names[]" placeholder="Name"></div>
+          <div class="form-group"><input name="emails[]" placeholder="Email" type="email"></div>
+        </div>
+      </div>
+      <button type="button" id="add-candidate-row" class="btn btn-sm btn-outline">+ Add Row</button>
+      <div class="form-group" style="margin-top:12px;">
+        <label>Or Upload Excel/CSV (columns: Name, Email)</label>
+        <input type="file" name="candidate_sheet" accept=".xlsx,.xls,.csv">
+      </div>
+      <button type="submit" class="btn btn-primary">Save Candidates</button>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>Schedule</h3>
+    <form method="POST" action="{{ url_for('professor.schedule_exam', exam_id=exam.id) }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="form-group">
+        <label>Scheduled Start (max 2 months ahead)</label>
+        <input type="datetime-local" name="scheduled_start" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Schedule Exam</button>
+    </form>
+    <form method="POST" action="{{ url_for('professor.go_live', exam_id=exam.id) }}" style="margin-top:10px;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-secondary">Go Live Now</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/professor_dashboard.js') }}"></script>
+{% endblock %}

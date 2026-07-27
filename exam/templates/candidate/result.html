@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Exam Complete{% endblock %}
+{% block content %}
+<div class="auth-wrap" style="text-align:center;">
+  <h2>{{ exam.title }}</h2>
+  {% if candidate.status == 'submitted' %}
+    <p>Your exam has been submitted successfully.</p>
+    <p style="font-size:24px;font-weight:700;color:#1a56db;">Score: {{ candidate.score if candidate.score is not none else 'Pending' }}</p>
+  {% elif candidate.status == 'terminated' %}
+    <p style="color:#d64545;">Your exam session was terminated due to policy violations.</p>
+  {% elif candidate.status == 'barred' %}
+    <p style="color:#d64545;">Your access has been revoked due to abnormal activity (JavaScript integrity check failed).</p>
+  {% endif %}
+</div>
+{% endblock %}

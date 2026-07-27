@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>{% block title %}Online Examination Platform{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% block extra_css %}{% endblock %}
+<script>
+  document.documentElement.classList.add('js-checking');
+</script>
+<noscript>
+  <style>.js-only-content{display:none !important;}</style>
+</noscript>
+</head>
+<body>
+<noscript>
+  <div class="no-js-overlay">
+    <div class="no-js-box">
+      <h1>JavaScript Required</h1>
+      <p>This platform requires JavaScript to function correctly and to enforce exam security.</p>
+      <p>Please enable JavaScript in your browser settings and reload this page.</p>
+    </div>
+  </div>
+</noscript>
+
+<div id="js-disabled-banner" class="no-js-overlay" style="display:none;">
+  <div class="no-js-box">
+    <h1>JavaScript Required</h1>
+    <p>We could not verify that JavaScript is active. Please enable JavaScript and reload the page.</p>
+  </div>
+</div>
+
+<div class="js-only-content" id="app-root">
+  {% include 'partials/flash.html' %}
+  {% block content %}{% endblock %}
+</div>
+
+<script src="{{ url_for('static', filename='js/js-guard.js') }}"></script>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

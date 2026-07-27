@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Branch",
+    "description": "Browser based mind mapping software",
+    "url": "https://branch.choogle.com",
+    "status": "Open Source",
+    "license": "Apache-2.0"
+  },
+  {
+    "name": "LabBuddy",
+    "description": "Laboratory assistant for pharmaceutical R&D",
+    "url": "https://labbuddy.org",
+    "status": "Private",
+    "license": "All Rights Reserved"
+  },
+  {
+    "name": "Exam",
+    "description": "Secure online examination platform for professors and candidates",
+    "url": "/exam/", 
+    "status": "Private",
+    "license": "All Rights Reserved"
+  }
+]

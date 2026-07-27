@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ exam.title }} - Exam{% endblock %}
+{% block content %}
+<div class="watermark"><span>{{ candidate.name }} | {{ candidate.email }}</span></div>
+
+<div class="exam-topbar">
+  <div>{{ exam.title }}</div>
+  <div class="exam-timer" id="exam-timer">--:--</div>
+  <div>Warnings: <span id="warning-count">{{ candidate.warnings_count }}</span></div>
+</div>
+
+<div class="q-palette" id="q-palette"></div>
+
+<div class="exam-room-wrap {{ 'no-pdf' if not has_case_study else '' }}" id="exam-room-wrap">
+  <div class="mcq-pane" id="mcq-pane">
+    {% for q in questions %}
+    <div class="question-block" data-qindex="{{ loop.index0 }}" data-qid="{{ q.id }}" style="{{ '' if loop.index0 == 0 else 'display:none;' }}">
+      <div class="q-index">Question {{ loop.index }} of {{ questions|length }} ({{ q.marks }} marks)</div>
+      <div class="q-text">{{ q.text }}</div>
+      <div class="options">
+        {% for key, text in q.options %}
+        <div class="option-item {{ 'selected' if q.selected == key else '' }}" data-value="{{ key }}">
+          <input type="radio" name="q_{{ q.id }}" value="{{ key }}" {{ 'checked' if q.selected == key else '' }}>
+          <label>{{ key|upper }}) {{ text }}</label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if has_case_study %}
+  <div class="pdf-pane" id="pdf-pane">
+    <iframe class="case-study-frame" title="Case study PDF" src="{{ url_for('candidate.case_study_pdf', exam_id=exam.id) }}"></iframe>
+  </div>
+  {% endif %}
+</div>
+
+<div class="exam-nav">
+  <button class="btn btn-outline" id="btn-prev">Previous</button>
+  <div>
+    <button class="btn btn-secondary" id="btn-review">Review</button>
+    <button class="btn btn-primary" id="btn-next">Next</button>
+    <button class="btn btn-danger" id="btn-submit" style="display:none;">Submit Exam</button>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+window.EXAM_CONFIG = {
+  examId: "{{ exam.id }}",
+  totalQuestions: {{ questions|length }},
+  durationSeconds: {{ candidate.remaining_seconds or (exam.duration_minutes * 60) }},
+  hasCaseStudy: {{ 'true' if has_case_study else 'false' }},
+  antiCheat: {
+    disableCopy: {{ 'true' if exam.anti_cheat.disable_copy else 'false' }},
+    disablePaste: {{ 'true' if exam.anti_cheat.disable_paste else 'false' }},
+    disableRightClick: {{ 'true' if exam.anti_cheat.disable_right_click else 'false' }},
+    disableRefresh: {{ 'true' if exam.anti_cheat.disable_refresh else 'false' }},
+    disablePrinting: {{ 'true' if exam.anti_cheat.disable_printing else 'false' }},
+    disableDragDrop: {{ 'true' if exam.anti_cheat.disable_drag_drop else 'false' }},
+    disableTextSelection: {{ 'true' if exam.anti_cheat.disable_text_selection else 'false' }},
+    requireFullscreen: {{ 'true' if exam.anti_cheat.require_fullscreen else 'false' }},
+    detectTabSwitch: {{ 'true' if exam.anti_cheat.detect_tab_switch else 'false' }},
+    detectWindowBlur: {{ 'true' if exam.anti_cheat.detect_window_blur else 'false' }},
+    detectFullscreenExit: {{ 'true' if exam.anti_cheat.detect_fullscreen_exit else 'false' }},
+    maxSecondsOutside: {{ exam.anti_cheat.max_seconds_outside }}
+  }
+};
+</script>
+<script src="{{ url_for('static', filename='js/anti_cheat.js') }}"></script>
+<script src="{{ url_for('static', filename='js/exam_engine.js') }}"></script>
+{% endblock %}

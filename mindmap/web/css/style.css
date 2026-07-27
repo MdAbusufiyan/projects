@@ -1,0 +1,177 @@
+:root{
+  --bg: #0a0a0b;
+  --bg-elevated: #131315;
+  --border: #232326;
+  --text: #ededef;
+  --text-soft: #9a9aa0;
+  --accent: #6e7bff;
+  --accent-soft: rgba(110,123,255,0.12);
+  --radius: 12px;
+  --max-width: 1080px;
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html{ scroll-behavior:smooth; }
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+
+a{ color:inherit; text-decoration:none; }
+
+.section-inner{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:0 24px;
+}
+
+/* ---------- Header / Nav ---------- */
+.site-header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(10,10,11,0.8);
+  backdrop-filter: blur(10px);
+  border-bottom:1px solid var(--border);
+}
+.nav{
+  max-width:var(--max-width);
+  margin:0 auto;
+  padding:16px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.nav-logo{
+  font-weight:700; font-size:15px; letter-spacing:0.14em;
+}
+.nav-links{
+  display:flex; gap:28px; list-style:none;
+}
+.nav-links a{
+  font-size:14px; color:var(--text-soft);
+  transition:color .15s ease;
+}
+.nav-links a:hover{ color:var(--text); }
+
+.nav-toggle{
+  display:none;
+  flex-direction:column; gap:4px;
+  background:none; border:none; cursor:pointer; padding:8px;
+}
+.nav-toggle span{
+  width:20px; height:1.5px; background:var(--text);
+  transition:transform .2s ease, opacity .2s ease;
+}
+
+/* ---------- Hero ---------- */
+.hero{
+  min-height:88vh;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center;
+  padding:80px 24px;
+}
+.hero-inner{ max-width:640px; }
+.hero-logo{
+  font-size:clamp(40px, 8vw, 64px);
+  font-weight:700;
+  letter-spacing:0.04em;
+  margin-bottom:16px;
+}
+.hero-tagline{
+  color:var(--text-soft);
+  font-size:clamp(15px, 2vw, 18px);
+  margin-bottom:36px;
+}
+.hero-actions{
+  display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
+}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  padding:11px 22px;
+  border-radius:8px;
+  font-size:14px; font-weight:600;
+  border:1px solid transparent;
+  transition:transform .15s ease, background .15s ease, border-color .15s ease;
+}
+.btn:hover{ transform:translateY(-1px); }
+.btn-primary{ background:var(--text); color:var(--bg); }
+.btn-primary:hover{ background:#fff; }
+.btn-secondary{ border-color:var(--border); color:var(--text); }
+.btn-secondary:hover{ border-color:var(--text-soft); }
+
+/* ---------- Sections ---------- */
+.section-title{
+  font-size:clamp(24px, 3vw, 30px);
+  font-weight:700;
+  margin-bottom:20px;
+}
+.about, .projects{ padding:80px 0; border-top:1px solid var(--border); }
+.about-text{
+  color:var(--text-soft);
+  max-width:640px;
+  font-size:15.5px;
+}
+
+.projects-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:18px;
+}
+
+/* Project card styles are defined here now so Phase 2's JS only needs to
+   generate markup — no CSS changes required when more projects are added. */
+.project-card{
+  background:var(--bg-elevated);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:22px;
+  display:flex; flex-direction:column; gap:10px;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.project-card:hover{
+  border-color:var(--accent);
+  transform:translateY(-2px);
+}
+.project-card-title{ font-size:17px; font-weight:600; }
+.project-card-desc{ color:var(--text-soft); font-size:14px; flex:1; }
+.project-card-meta{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+.badge{
+  font-size:11.5px; font-weight:600;
+  padding:3px 9px; border-radius:999px;
+  border:1px solid var(--border);
+  color:var(--text-soft);
+}
+.badge-open-source{ color:#7ee787; border-color:rgba(126,231,135,0.3); background:rgba(126,231,135,0.08); }
+.badge-private{ color:#f0a742; border-color:rgba(240,167,66,0.3); background:rgba(240,167,66,0.08); }
+.project-card-link{
+  margin-top:6px; font-size:13.5px; font-weight:600; color:var(--accent);
+}
+
+/* ---------- Footer ---------- */
+.site-footer{ border-top:1px solid var(--border); padding:36px 0; }
+.footer-inner{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.footer-links{ display:flex; gap:20px; }
+.footer-links a{ font-size:13.5px; color:var(--text-soft); }
+.footer-links a:hover{ color:var(--text); }
+.footer-copy{ font-size:13px; color:var(--text-soft); }
+
+/* ---------- Responsive (full pass happens in Phase 3) ---------- */
+@media (max-width: 640px){
+  .nav-toggle{ display:flex; }
+  .nav-links{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; gap:0;
+    background:var(--bg-elevated);
+    border-bottom:1px solid var(--border);
+    max-height:0; overflow:hidden;
+  }
+  .nav-links.open{ max-height:260px; }
+  .nav-links li{ border-top:1px solid var(--border); }
+  .nav-links a{ display:block; padding:14px 24px; }
+}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Create Exam{% endblock %}
+{% block content %}
+{% include 'partials/professor_topbar.html' %}
+<div class="container" style="max-width:800px;">
+  <div class="page-header"><h1>Create New Exam</h1></div>
+  <form method="POST" enctype="multipart/form-data" action="{{ url_for('professor.create_exam') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <div class="card">
+      <h3>Basic Details</h3>
+      <div class="form-group">
+        <label>Exam Title</label>
+        <input type="text" name="title" required maxlength="255">
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="3" maxlength="2000"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Max Candidates (max 100)</label>
+          <input type="number" name="max_candidates" value="100" max="100" min="1">
+        </div>
+        <div class="form-group">
+          <label>Duration (minutes)</label>
+          <input type="number" name="duration_minutes" value="60" min="5">
+        </div>
+      </div>
+      <div class="checkbox-row"><input type="checkbox" name="randomize_questions" checked> Randomize question order</div>
+      <div class="checkbox-row"><input type="checkbox" name="randomize_options" checked> Randomize option order</div>
+    </div>
+
+    <div class="card">
+      <h3>Candidate Access Mode</h3>
+      <div class="form-group">
+        <label>Access Mode</label>
+        <select name="access_mode" id="access_mode">
+          <option value="open">Open (self-registration)</option>
+          <option value="invite">Invite Only (email link)</option>
+          <option value="password">Password Protected</option>
+        </select>
+      </div>
+      <div class="form-group" id="password_field" style="display:none;">
+        <label>Exam Password (leave blank to auto-generate)</label>
+        <input type="text" name="exam_password" maxlength="64">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Content</h3>
+      <div class="form-group">
+        <label>Case Study PDF (optional)</label>
+        <input type="file" name="case_study_pdf" accept="application/pdf">
+      </div>
+      <div class="form-group">
+        <label>MCQ PDF (optional - auto-parsed; format: Q1. text / A) opt / Answer: A)</label>
+        <input type="file" name="mcq_pdf" accept="application/pdf">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Restrictions</h3>
+      <div class="form-group">
+        <label>IP Restriction (comma-separated IPs/CIDRs, optional)</label>
+        <input type="text" name="ip_restriction" maxlength="1000">
+      </div>
+      <div class="form-group">
+        <label>Email Domain Restriction (e.g. university.edu, optional)</label>
+        <input type="text" name="email_restriction_domain" maxlength="255">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Anti-Cheat Configuration</h3>
+      <div class="form-row">
+        <div>
+          {% for f, label in [
+            ('disable_copy','Disable Copy'),('disable_paste','Disable Paste'),
+            ('disable_right_click','Disable Right Click'),('disable_refresh','Disable Refresh'),
+            ('disable_printing','Disable Printing'),('disable_drag_drop','Disable Drag & Drop')] %}
+          <div class="checkbox-row"><input type="checkbox" name="{{ f }}" checked> {{ label }}</div>
+          {% endfor %}
+        </div>
+        <div>
+          {% for f, label in [
+            ('disable_text_selection','Disable Text Selection'),('require_fullscreen','Require Fullscreen'),
+            ('detect_tab_switch','Detect Tab Switching'),('detect_window_blur','Detect Window Blur'),
+            ('detect_fullscreen_exit','Detect Fullscreen Exit'),('detect_multiple_login','Detect Multiple Login')] %}
+          <div class="checkbox-row"><input type="checkbox" name="{{ f }}" checked> {{ label }}</div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:12px;">
+        <div class="form-group">
+          <label>Max Warnings</label>
+          <input type="number" name="max_warnings" value="3" min="1">
+        </div>
+        <div class="form-group">
+          <label>Max Tab Switches</label>
+          <input type="number" name="max_tab_switches" value="3" min="1">
+        </div>
+        <div class="form-group">
+          <label>Max Seconds Outside Exam</label>
+          <input type="number" name="max_seconds_outside" value="30" min="5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Violation Action</label>
+        <select name="violation_action">
+          <option value="warning">Warning Only</option>
+          <option value="auto_submit">Auto Submit</option>
+          <option value="terminate">Terminate Exam</option>
+        </select>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Exam &amp; Continue</button>
+  </form>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+document.getElementById('access_mode').addEventListener('change', function(e){
+  document.getElementById('password_field').style.display = (e.target.value === 'password') ? 'block' : 'none';
+});
+</script>
+{% endblock %}

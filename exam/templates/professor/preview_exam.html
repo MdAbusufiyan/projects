@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Preview {{ exam.title }}{% endblock %}
+{% block content %}
+{% include 'partials/professor_topbar.html' %}
+<div class="container" style="max-width:900px;">
+  <div class="page-header">
+    <h1>Preview: {{ exam.title }}</h1>
+    <p>This is the professor review view. Correct answers are visible only here, never to candidates.</p>
+    <a class="btn btn-outline" href="{{ url_for('professor.edit_exam', exam_id=exam.id) }}">Back to editor</a>
+  </div>
+
+  {% if exam.case_study_pdf %}
+  <div class="card">
+    <h3>Case study material</h3>
+    <iframe class="case-study-frame" title="Case study PDF" src="{{ url_for('professor.case_study_pdf', exam_id=exam.id) }}"></iframe>
+  </div>
+  {% endif %}
+
+  <div class="card">
+    <h3>Questions ({{ questions|length }})</h3>
+    {% if not questions %}
+      <p>No questions are ready yet. Return to the editor to add them.</p>
+    {% endif %}
+    {% for q in questions %}
+    <section class="question-editor" style="margin-bottom:16px;">
+      <strong>Question {{ loop.index }} · {{ q.marks }} mark{% if q.marks != 1 %}s{% endif %}</strong>
+      <p>{{ q.question_text }}</p>
+      {% for key, value in [('a', q.option_a), ('b', q.option_b), ('c', q.option_c), ('d', q.option_d)] %}
+        {% if value %}
+          <div class="checkbox-row" style="padding:6px 0;">
+            <input type="radio" disabled {% if q.correct_option == key %}checked{% endif %}>
+            {{ key|upper }}) {{ value }} {% if q.correct_option == key %}<strong>— correct answer</strong>{% endif %}
+          </div>
+        {% endif %}
+      {% endfor %}
+      {% if validation[q.id] %}
+        <p class="flash flash-error"><strong>Needs fixing:</strong> {{ validation[q.id]|join('; ') }}</p>
+      {% else %}
+        <p class="flash flash-success">✓ Question and answer are valid.</p>
+      {% endif %}
+    </section>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

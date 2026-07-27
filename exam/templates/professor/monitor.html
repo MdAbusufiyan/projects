@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Live Monitor{% endblock %}
+{% block content %}
+{% include 'partials/professor_topbar.html' %}
+<div class="container">
+  <div class="page-header">
+    <h1>Live Monitor: {{ exam.title }}</h1>
+    <div>
+      <a class="btn btn-sm btn-outline" href="{{ url_for('professor.export_csv', exam_id=exam.id) }}">Export CSV</a>
+      <a class="btn btn-sm btn-outline" href="{{ url_for('professor.export_pdf', exam_id=exam.id) }}">Export PDF</a>
+    </div>
+  </div>
+
+  <div style="margin-bottom:16px;">
+    <div class="stat-box"><div class="num" id="stat-total">{{ candidates|length }}</div><div class="label">Total</div></div>
+    <div class="stat-box"><div class="num" id="stat-progress">0</div><div class="label">In Progress</div></div>
+    <div class="stat-box"><div class="num" id="stat-submitted">0</div><div class="label">Submitted</div></div>
+    <div class="stat-box"><div class="num" id="stat-flagged">0</div><div class="label">Flagged</div></div>
+  </div>
+
+  <div class="card">
+    <table class="data-table" id="monitor-table">
+      <thead>
+        <tr>
+          <th>Name</th><th>Email</th><th>Status</th><th>Current Q</th><th>Remaining</th>
+          <th>Warnings</th><th>Tab Switch</th><th>Blur</th><th>FS Exits</th><th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in candidates %}
+        <tr class="status-{{ c.status }}" data-candidate-id="{{ c.id }}">
+          <td>{{ c.name }}</td>
+          <td>{{ c.email }}</td>
+          <td class="col-status">{{ c.status }}</td>
+          <td class="col-current-q">{{ c.current_question_index }}</td>
+          <td class="col-remaining">{{ c.remaining_seconds }}</td>
+          <td class="col-warnings">{{ c.warnings_count }}</td>
+          <td class="col-tabswitch">{{ c.tab_switch_count }}</td>
+          <td class="col-blur">{{ c.blur_count }}</td>
+          <td class="col-fsexit">{{ c.fullscreen_exit_count }}</td>
+          <td class="col-score">{{ c.score if c.score is not none else '-' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>window.EXAM_ID = "{{ exam.id }}";</script>
+<script src="{{ url_for('static', filename='js/monitor.js') }}"></script>
+{% endblock %}

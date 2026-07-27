@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+{% include 'partials/professor_topbar.html' %}
+<div class="container">
+  <div class="page-header">
+    <h1>My Exams</h1>
+    <a href="{{ url_for('professor.create_exam') }}" class="btn btn-primary">+ New Exam</a>
+  </div>
+  <div class="dashboard-grid">
+    {% for status, label, cls in [('draft','Draft','draft'),('scheduled','Scheduled','scheduled'),('live','Live','live'),('completed','Completed','completed')] %}
+    <div class="dash-col">
+      <h3 class="{{ cls }}">{{ label }} ({{ grouped.get(status, [])|length }})</h3>
+      {% for exam in grouped.get(status, []) %}
+      <div class="exam-card">
+        <span class="exam-title">{{ exam.title }}</span>
+        <span class="exam-meta">
+          {{ exam.access_mode|capitalize }} &middot; Max {{ exam.max_candidates }} candidates
+          {% if exam.scheduled_start %} &middot; {{ exam.scheduled_start.strftime('%d %b %Y %H:%M') }}{% endif %}
+        </span>
+        <div class="exam-actions">
+          <a class="btn btn-sm btn-outline" href="{{ url_for('professor.edit_exam', exam_id=exam.id) }}">Edit</a>
+          {% if status == 'draft' %}
+          <form method="POST" action="{{ url_for('professor.delete_draft', exam_id=exam.id) }}" style="display:inline;" onsubmit="return confirm('Delete this draft and all of its questions? This cannot be undone.');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-sm btn-danger" type="submit">Delete Draft</button>
+          </form>
+          {% endif %}
+          {% if status in ['scheduled','live'] %}
+          <a class="btn btn-sm btn-secondary" href="{{ url_for('professor.monitor', exam_id=exam.id) }}">Monitor</a>
+          {% endif %}
+          {% if status == 'completed' %}
+          <a class="btn btn-sm btn-outline" href="{{ url_for('professor.export_csv', exam_id=exam.id) }}">CSV</a>
+          <a class="btn btn-sm btn-outline" href="{{ url_for('professor.export_pdf', exam_id=exam.id) }}">PDF</a>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+      <p style="color:#999;font-size:12px;">No exams.</p>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Professor Registration{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <h2>Create Professor Account</h2>
+  <form method="POST" action="{{ url_for('auth.professor_register') }}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" name="name" required maxlength="120">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" name="email" required maxlength="255">
+    </div>
+    <div class="form-group">
+      <label>Password (min 8 characters)</label>
+      <input type="password" name="password" required minlength="8">
+    </div>
+    <button type="submit" class="btn btn-primary" style="width:100%;">Register</button>
+  </form>
+  <p style="margin-top:16px;font-size:13px;">Already have an account? <a href="{{ url_for('auth.professor_login') }}">Login</a></p>
+</div>
+{% endblock %}
