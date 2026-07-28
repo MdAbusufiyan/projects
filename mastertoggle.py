@@ -1,28 +1,28 @@
 import subprocess
-import signal
 import sys
+import signal
+from pathlib import Path
 
-processes = []
+BASE_DIR = Path(__file__).resolve().parent
+python = sys.executable
+
+processes = [
+    subprocess.Popen([python, str(BASE_DIR / "exam" / "app.py")]),
+    subprocess.Popen([python, str(BASE_DIR / "mindmap" / "server.py")]),
+]
+
+print("Both servers started.")
 
 try:
-    # Start exam app
-    p1 = subprocess.Popen(
-        ["python3", "/mnt/data/project/exam/app.py"]
-    )
-    processes.append(p1)
-
-    # Start mindmap server
-    p2 = subprocess.Popen(
-        ["python3", "/mnt/data/project/mindmap/server.py"]
-    )
-    processes.append(p2)
-
-    print("Both servers started.")
-
-    # Wait for both processes
     for p in processes:
         p.wait()
-
+except KeyboardInterrupt:
+    print("\nStopping servers...")
+    for p in processes:
+        p.send_signal(signal.SIGINT)
+    for p in processes:
+        p.wait()
+        
 except KeyboardInterrupt:
     print("\nStopping servers...")
     for p in processes:
