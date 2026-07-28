@@ -94,14 +94,13 @@ def index():
     return send_from_directory(WEB_FOLDER, "index.html")
 
 
-@app.route("/branch/")
-def branch_index():
-    return send_from_directory(BRANCH_FOLDER, "Mindmap.html")
+@app.route("/mindmap/")
+def mindmap_index():
+    return send_from_directory(MINDMAP_FOLDER, "Mindmap.html")
 
-
-@app.route("/branch/<path:path>")
-def branch_static(path):
-    return send_from_directory(BRANCH_FOLDER, path)
+@app.route("/mindmap/<path:path>")
+def mindmap_static(path):
+    return send_from_directory(MINDMAP_FOLDER, path)
 
 
 @app.route("/exam")

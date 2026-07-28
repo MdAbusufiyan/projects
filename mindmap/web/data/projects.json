@@ -2,7 +2,7 @@
   {
     "name": "Branch",
     "description": "Browser based mind mapping software",
-    "url": "https://branch.chooogle.com",
+    "url": "/mindmap/",
     "status": "Open Source",
     "license": "Apache-2.0"
   },
