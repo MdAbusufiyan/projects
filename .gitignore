@@ -12,4 +12,3 @@ logs/
 output/
 *.log
 .DS_Store
-*.pdf
