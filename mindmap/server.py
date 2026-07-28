@@ -9,8 +9,7 @@ from urllib.error import HTTPError, URLError
 HOST = "127.0.0.1"
 PORT = 8765
 MASKED_ROUTE_ROOT = "/exam/"
-EXAM_TARGET = os.getenv("EXAM_TARGET", "http://172.20.10.7:8520")
-
+EXAM_TARGET = os.getenv("EXAM_TARGET", "http://127.0.0.1:8520")
 WEB_FOLDER = os.path.join(os.path.dirname(__file__), "web")
 BRANCH_FOLDER = os.path.join(WEB_FOLDER, "branch")
 
