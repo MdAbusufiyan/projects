@@ -33,7 +33,8 @@
           <span class="badge ${statusClass(project.status)}">${escapeHtml(project.status)}</span>
           <span class="badge">${escapeHtml(project.license)}</span>
         </div>
-        <a class="project-card-link" href="${escapeHtml(project.url)}">View project</a>
+        <span class="project-card-link">View project</span>
+        <a class="project-card-stretch" href="${escapeHtml(project.url)}" target="_blank" rel="noopener" aria-label="Open ${escapeHtml(project.name)}"></a>
       </article>
     `).join('');
   };

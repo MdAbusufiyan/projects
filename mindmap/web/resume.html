@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abu Sufiyan</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --text:#000000;
+    --text-soft:#555555;
+    --line:#000000;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:Arial, Helvetica, sans-serif;
+    font-size:16px;
+    line-height:1.55;
+  }
+  a{ color:var(--text); text-decoration:none; border-bottom:1px solid var(--text); font-weight:600; }
+  a:hover{ opacity:0.6; }
+
+  .layout{
+    display:grid;
+    grid-template-columns:280px 1fr;
+    min-height:100vh;
+  }
+
+  .side{
+    position:sticky; top:0; align-self:start;
+    height:100vh;
+    padding:48px 32px;
+    border-right:1px solid var(--line);
+    display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .side-top h1{
+    font-size:24px; font-weight:800; margin-bottom:4px;
+    letter-spacing:-0.01em;
+  }
+  .side-role{ color:var(--text-soft); font-size:14px; font-weight:600; margin-bottom:28px; }
+  .side-nav{ list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .side-nav a{ border:none; font-size:14px; color:var(--text-soft); font-weight:600; }
+  .side-nav a:hover{ color:var(--text); opacity:1; text-decoration:underline; }
+
+  .side-contact{ display:flex; flex-direction:column; gap:10px; }
+  .side-contact-item{ display:flex; flex-direction:column; }
+  .side-contact-label{ font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-soft); font-weight:700; margin-bottom:2px; }
+  .side-contact-item a{ font-size:14px; border-bottom:1px solid var(--line); width:fit-content; }
+
+  .content{ padding:56px 64px 100px; }
+
+  .lede{ font-size:19px; font-weight:500; margin-bottom:56px; color:var(--text); }
+
+  section{ padding:40px 0; border-top:1px solid var(--line); }
+  section:first-of-type{ border-top:none; padding-top:0; }
+  .sec-num{ font-size:12px; font-weight:700; color:var(--text-soft); margin-bottom:6px; letter-spacing:.05em; }
+  h2{ font-size:20px; font-weight:800; margin-bottom:24px; }
+
+  .role-head{ display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; }
+  .role-name{ font-weight:800; font-size:16px; }
+  .role-date{ font-size:13px; color:var(--text-soft); font-weight:600; white-space:nowrap; }
+  .role-org{ font-size:14px; color:var(--text-soft); font-weight:600; margin:2px 0 18px; }
+  .duty-list{ list-style:none; }
+  .duty-list li{
+    font-size:14.5px; color:var(--text);
+    padding:10px 0; border-top:1px solid var(--line);
+  }
+  .duty-list li:first-child{ border-top:none; padding-top:0; }
+
+  .spec-row{
+    display:grid; grid-template-columns:170px 1fr; gap:4px 20px;
+    padding:14px 0; border-top:1px solid var(--line);
+  }
+  .spec-row:first-child{ border-top:none; padding-top:0; }
+  .spec-k{ font-size:13px; font-weight:800; }
+  .spec-v{ font-size:14px; color:var(--text); }
+
+  .proj-item{ padding:18px 0; border-top:1px solid var(--line); }
+  .proj-item:first-child{ border-top:none; padding-top:0; }
+  .proj-name{ font-weight:800; font-size:15px; margin-bottom:4px; }
+  .proj-desc{ font-size:14px; color:var(--text); margin-bottom:6px; }
+  .proj-link{ font-size:13px; }
+
+  .patent-title{ font-weight:800; font-size:15px; margin-bottom:8px; }
+  .patent-desc{ font-size:14px; color:var(--text); max-width:540px; margin-bottom:10px; }
+  .patent-id{ font-size:13px; color:var(--text-soft); font-weight:600; }
+
+  .edu-row{
+    display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    padding:12px 0; border-top:1px solid var(--line);
+  }
+  .edu-row:first-child{ border-top:none; padding-top:0; }
+  .edu-exam{ font-size:14.5px; font-weight:800; }
+  .edu-board{ font-size:13px; color:var(--text-soft); font-weight:600; }
+  .edu-meta{ font-size:13px; color:var(--text-soft); font-weight:600; white-space:nowrap; }
+
+  .ref-name{ font-weight:800; font-size:15px; margin-bottom:4px; }
+  .ref-role{ font-size:14px; color:var(--text); }
+  .ref-email{
+    position:relative; cursor:default;
+    border-bottom:1px dotted var(--text-soft);
+    color:var(--text-soft); font-weight:600;
+  }
+  .ref-email::after{
+    content:"Visible on request - email me directly";
+    position:absolute; left:0; bottom:130%;
+    white-space:nowrap;
+    background:#000; color:#fff;
+    font-size:11.5px; font-weight:600;
+    padding:6px 10px;
+    opacity:0; pointer-events:none;
+    transition:opacity .15s ease;
+  }
+  .ref-email:hover::after{ opacity:1; }
+
+  #pdf-view{ display:none; padding:56px 64px; }
+  #pdf-view.active{ display:block; }
+  .content.hidden{ display:none; }
+  .pdf-actions{ display:flex; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+  .pdf-actions span{ font-size:13px; color:var(--text-soft); font-weight:600; }
+  .dl-btn{ font-size:13px; font-weight:700; border:1px solid var(--text); padding:6px 14px; }
+  .dl-btn:hover{ background:var(--text); color:var(--bg); opacity:1; }
+  .pdf-frame-wrap{ border:1px solid var(--line); height:82vh; }
+  .pdf-frame-wrap iframe{ width:100%; height:100%; border:none; }
+
+  @media (max-width:860px){
+    .layout{ grid-template-columns:1fr; }
+    .side{
+      position:relative; height:auto;
+      border-right:none; border-bottom:1px solid var(--line);
+      flex-direction:column; align-items:flex-start; gap:20px;
+      padding:24px;
+    }
+    .side-nav{ flex-direction:row; gap:16px; flex-wrap:wrap; }
+    .side-contact{ flex-direction:row; flex-wrap:wrap; gap:18px; }
+    .content{ padding:36px 24px 80px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="layout" id="profile-view">
+  <aside class="side">
+    <div class="side-top">
+      <h1>Abu Sufiyan</h1>
+      <p class="side-role">Automation Engineer</p>
+      <ul class="side-nav">
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#" onclick="showView('pdf');return false;">PDF</a></li>
+      </ul>
+    </div>
+    <div class="side-contact" id="contact-line"></div>
+  </aside>
+
+  <main class="content">
+    <p class="lede" id="summary-text"></p>
+
+    <section id="experience">
+      <!-- <p class="sec-num">01</p> -->
+      <h2>Experience</h2>
+      <div class="role-head">
+        <span class="role-name">Research Associate, Automation Engineer</span>
+        <span class="role-date">May 2024 - Present <span id="tenure"></span></span>
+      </div>
+      <p class="role-org">Dr. Reddy's Institute of Life Sciences, Hyderabad - 10X Lab of Excellence</p>
+      <ul class="duty-list" id="duty-list"></ul>
+    </section>
+
+    <section id="skills">
+      <!-- <p class="sec-num">02</p> -->
+      <h2>Skills</h2>
+      <div id="spec-list"></div>
+    </section>
+
+    <section id="projects">
+      <!-- <p class="sec-num">03</p> -->
+      <h2>Projects</h2>
+      <div id="proj-list"></div>
+    </section>
+
+    <section id="patent">
+      <!-- <p class="sec-num">04</p> -->
+      <h2>Patent</h2>
+      <p class="patent-title">A System for Controlling an External Device and Method Thereof</p>
+      <p class="patent-desc">Inventor on a laboratory-equipment control interface platform, filed while leading its technical development at Dr. Reddy's Institute of Life Sciences.</p>
+      <p class="patent-id">Application No. IN202541044701 - Filed 8 May 2025 - patent pending</p>
+    </section>
+
+    <section id="education">
+      <!-- <p class="sec-num">05</p> -->
+      <h2>Education</h2>
+      <div id="edu-list"></div>
+    </section>
+
+    <section id="reference">
+      <!-- <p class="sec-num">06</p> -->
+      <h2>Reference</h2>
+      <p class="ref-name">Maheshkumar Uppada</p>
+      <p class="ref-role">Principal Research Scientist &amp; Head of AI Driven Process Technologies, 10X Lab of Excellence<br>
+      Dr. Reddy's Institute of Life Sciences - <span class="ref-email">Email available on request</span></p>
+    </section>
+  </main>
+</div>
+
+<div id="pdf-view">
+  <div class="pdf-actions">
+    <span>Source document: resume.pdf</span>
+    <a class="dl-btn" href="resume.pdf" download>Download PDF</a>
+  </div>
+  <div class="pdf-frame-wrap">
+    <iframe src="resume.pdf" title="Abu Sufiyan Resume PDF"></iframe>
+  </div>
+</div>
+
+<script>
+const RESUME = {
+  summary: "Chemical Engineer with around two years of pharmaceutical R&D support experience hands-on with continuous flow chemistry, process automation, laboratory instrumentation, and smart laboratory systems. Inventor on a filed Indian patent for laboratory device control.",
+  contact: [
+    { label: "GitHub", value: "GitHub", href: "https://github.com/MdAbusufiyan" },
+    { label: "LinkedIn", value: "LinkedIn", href: "https://linkedin.com/in/sufiyanabu" },
+    { label: "Email", value: "Email", href: "mailto:ptlabusufiyanpatel@gmail.com" },
+    { label: "Web", value: "labbuddy.org", href: "https://labbuddy.org" }
+  ],
+  duties: [
+    "Work within the 10X Lab of Excellence to support pharmaceutical R&D through continuous flow chemistry, process development, laboratory automation, and instrumentation engineering.",
+    "Operate and support Vapourtec R-Series continuous-flow platforms, HPLC pumps, peristaltic pumps, and multiple reactor configurations for reaction development and experimental workflow execution.",
+    "Collaborate with research chemists to configure flow rate, reactor temperature, and residence time during continuous-flow experiments and process evaluation studies.",
+    "Support fixed-bed catalytic hydrogenation studies using catalyst-packed reactors, liquid delivery systems, and mass flow controllers under controlled hydrogen handling conditions.",
+    "Conduct solvent screening and solubility studies to assess suitability of reactions for continuous-flow processing.",
+    "Configure and customize HITEC ZANG LabManager for coordinated operation of pumps, reactors, sensors, and associated laboratory equipment.",
+    "Develop automation solutions for standalone and legacy laboratory instruments, including RS-232 and RS-485 communication-based integration for centralized monitoring and control.",
+    "Design and integrate instrumentation systems involving PT100 sensors, PID controllers, DAQ systems, pH sensors, stirrers, pumps, and safety interlocks.",
+    "Build custom embedded hardware, PCB-based monitoring devices, and equipment control interfaces to retrofit conventional lab systems into digitally controlled, data-enabled platforms.",
+    "Prepare SOPs, support onboarding activities, and contribute to improving repeatability and standardization in automated laboratory operations.",
+    "Led the technical development of a laboratory equipment interface platform that formed the basis of a filed Indian patent."
+  ],
+  spec: [
+    { k: "Process Development", v: "Continuous flow chemistry, hydrogenation, solvent screening, process safety, reaction system support." },
+    { k: "Laboratory Automation", v: "HITEC ZANG LabManager, equipment integration, experimental workflow automation, SOP development, lab digitalization." },
+    { k: "Instrumentation", v: "PT100 sensors, PID controllers, DAQ systems, MFCs, HPLC/peristaltic/syringe/diaphragm pumps, pH sensors, fixed-bed reactors, microreactors, plug flow reactors, Corning/Vapourtec flow reactors." },
+    { k: "Embedded Tools", v: "KiCad, STM32, ESP32, Arduino, PCB design, firmware basics, Raspberry Pi, Fusion 360, 3D printing." },
+    { k: "Software", v: "Python, MATLAB, LabVIEW, Power BI, Microsoft Office, Linux." }
+  ],
+  projects: [
+    { name: "LabBuddy.org - Integrated Laboratory Knowledge Platform", desc: "Independently designed a lab knowledge platform consolidating chemical API info, safety resources, GHS data, analytical references, and calculators into one searchable interface.", link: "https://labbuddy.org" },
+    { name: "Protocol Bridge for Legacy RS-232/RS-485 Devices", desc: "Configurable communication layer and LAN-based interface connecting legacy laboratory instruments into a centralized digital workflow." },
+    { name: "Networked Syringe Pump", desc: "Standalone syringe pump with remote monitoring, data logging, and future suitability for continuous-flow applications." },
+    { name: "Distributed PT100 Temperature Monitoring", desc: "Modular monitoring architecture focused on reliability, scalability, and reduction of single-point failures." },
+    { name: "Digital Retrofitting of Analog Power Modules", desc: "Non-invasive digital control interface for legacy analog power hardware, preserving original circuitry." }
+  ],
+  education: [
+    { exam: "Bachelor of Engineering, Chemical Engineering", board: "Visvesvaraya Technological University", year: "2023", score: "6.4 CGPA" },
+    { exam: "Pre-University (12th)", board: "Dept. of Pre-University Education Board", year: "2019", score: "75.83%" },
+    { exam: "S.S.L.C. Examination", board: "Karnataka Secondary Education Examination Board", year: "2017", score: "80.16%" }
+  ]
+};
+
+function el(tag, cls, html){
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (html !== undefined) e.innerHTML = html;
+  return e;
+}
+
+document.getElementById('summary-text').textContent = RESUME.summary;
+
+const contactLine = document.getElementById('contact-line');
+RESUME.contact.forEach(c => {
+  const item = el('div', 'side-contact-item');
+  item.innerHTML = `<a href="${c.href}" target="_blank" rel="noopener">${c.value}</a>`;
+  contactLine.appendChild(item);
+});
+
+const dutyList = document.getElementById('duty-list');
+RESUME.duties.forEach(d => dutyList.appendChild(el('li', null, d)));
+
+const specList = document.getElementById('spec-list');
+RESUME.spec.forEach(s => {
+  const row = el('div', 'spec-row');
+  row.appendChild(el('div', 'spec-k', s.k));
+  row.appendChild(el('div', 'spec-v', s.v));
+  specList.appendChild(row);
+});
+
+const projList = document.getElementById('proj-list');
+RESUME.projects.forEach(p => {
+  const item = el('div', 'proj-item');
+  item.appendChild(el('div', 'proj-name', p.name));
+  item.appendChild(el('div', 'proj-desc', p.desc));
+  if (p.link) {
+    const a = document.createElement('a');
+    a.className = 'proj-link';
+    a.href = p.link; a.target = '_blank'; a.rel = 'noopener';
+    a.textContent = 'Visit →';
+    item.appendChild(a);
+  }
+  projList.appendChild(item);
+});
+
+const eduList = document.getElementById('edu-list');
+RESUME.education.forEach(e => {
+  const row = el('div', 'edu-row');
+  const main = el('div');
+  main.appendChild(el('div', 'edu-exam', e.exam));
+  main.appendChild(el('div', 'edu-board', e.board));
+  row.appendChild(main);
+  row.appendChild(el('div', 'edu-meta', `${e.year} - ${e.score}`));
+  eduList.appendChild(row);
+});
+
+const ROLE_START = new Date(2024, 4, 1);
+(function tenure(){
+  const now = new Date();
+  let months = (now.getFullYear() - ROLE_START.getFullYear()) * 12 + (now.getMonth() - ROLE_START.getMonth());
+  if (now.getDate() < ROLE_START.getDate()) months -= 1;
+  months = Math.max(months, 0);
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  let text;
+  if (years > 0 && rem > 0) text = `(${years} yr ${rem} mo)`;
+  else if (years > 0) text = `(${years} yr)`;
+  else text = `(${months} mo)`;
+  document.getElementById('tenure').textContent = text;
+})();
+
+function showView(mode){
+  const profile = document.getElementById('profile-view');
+  const pdf = document.getElementById('pdf-view');
+  if (mode === 'pdf') { profile.classList.add('hidden'); pdf.classList.add('active'); }
+  else { profile.classList.remove('hidden'); pdf.classList.remove('active'); }
+}
+</script>
+
+</body>
+</html>
