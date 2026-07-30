@@ -35,6 +35,7 @@
 
   #world-wrap{
     position:absolute; inset:0;
+    background: var(--canvas);
     background-image: radial-gradient(var(--canvas-line) 1.4px, transparent 1.4px);
     background-size: 28px 28px;
     cursor:grab;
@@ -314,36 +315,36 @@
   }
 
   #right-sidebar{
-    position:fixed; top:76px; left:20px; bottom:20px;
+    position:fixed; top:16px; left:16px; bottom:16px;
     z-index:100;
-    display:flex; flex-direction:column; align-items:flex-start; gap:12px;
-    max-height:calc(100vh - 96px);
-    overflow-y:auto; overflow-x:visible;
-    scrollbar-width:none;
-    padding-bottom:4px;
+    display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+    height:calc(100vh - 32px);
+    overflow:hidden;
+    padding-bottom:0;
   }
-  #right-sidebar::-webkit-scrollbar{ display:none; }
   #right-sidebar > *{ flex-shrink:0; }
 
   #toolbar{
     background:var(--paper);
-    border-radius:18px;
+    border-radius:16px;
     box-shadow:var(--shadow);
     display:flex; flex-direction:column; align-items:center; gap:0;
-    padding:10px 6px;
+    padding:8px 6px;
     border:1px solid rgba(28,27,25,0.08);
-    min-width:52px;
+    min-width:64px;
+    position: relative;
+    top: 64px;
   }
   .tb-section{
-    display:flex; flex-direction:column; align-items:center; gap:6px;
-    padding:8px 0;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:6px 0;
   }
   .tb-section + .tb-section{ border-left:none; border-top:1px solid rgba(28,27,25,0.1); }
   .tb-section-title{
     display:none;
   }
-  .tb-group{ display:flex; flex-direction:column; gap:2px; padding:2px 0; }
-  .tb-group + .tb-group{ border-left:none; border-top:1px solid rgba(28,27,25,0.08); margin-left:0; margin-top:2px; padding-top:8px; padding-left:0; }
+  .tb-group{ display:flex; flex-direction:column; gap:3px; padding:2px 0; }
+  .tb-group + .tb-group{ border-left:none; border-top:1px solid rgba(28,27,25,0.08); margin-left:0; margin-top:4px; padding-top:6px; padding-left:0; }
   .tb-section-anchor{ position:relative; display:flex; flex-direction:column; padding-bottom:0; }
   @keyframes dash-flow{
     from { stroke-dashoffset: 0; }
@@ -352,17 +353,17 @@
   .link-flowing{ animation:dash-flow 1.4s linear infinite; }
   .tb-btn{
     border:none; background:transparent; cursor:pointer;
-    width:38px; height:38px; border-radius:10px;
+    width:32px; height:32px; border-radius:8px;
     display:flex; align-items:center; justify-content:center;
-    color:var(--ink); font-size:16px;
+    color:var(--ink); font-size:14px;
     transition: background .12s ease;
   }
   .tb-btn:hover{ background:rgba(28,27,25,0.06); }
   .tb-btn:active{ background:rgba(28,27,25,0.1); }
-  .tb-btn svg{ width:18px; height:18px; }
+  .tb-btn svg{ width:15px; height:15px; }
   .tb-label{
-    font-family:'Caveat', cursive; font-weight:700; font-size:20px;
-    padding:0 0 8px; white-space:nowrap; letter-spacing:.2px;
+    font-family:'Caveat', cursive; font-weight:700; font-size:16px;
+    padding:0 0 4px; white-space:nowrap; letter-spacing:.2px;
     text-align:center;
   }
 
@@ -1317,7 +1318,7 @@
   }
 
   // ---------- Card collision / auto-adjust ----------
-  const CARD_GAP = 30;
+  const CARD_GAP = 40;
   function resolveCollisions(nodeIds){
     const ids = (nodeIds || []).filter(id => state.nodes[id]);
     if (!ids.length) return false;
@@ -1329,7 +1330,7 @@
       rects[id] = { w: el.offsetWidth, h: el.offsetHeight };
     });
     let changed = false;
-    for (let iter = 0; iter < 8; iter++){
+    for (let iter = 0; iter < 10; iter++){
       let anyOverlap = false;
       ids.forEach(id => {
         const n = state.nodes[id];
@@ -1350,11 +1351,10 @@
             changed = true;
             const overlapX = minX - Math.abs(dx);
             const overlapY = minY - Math.abs(dy);
-            if (overlapX < overlapY){
-              n.x += (dx === 0 ? (Math.random() - 0.5) || 0.1 : Math.sign(dx)) * overlapX;
-            } else {
-              n.y += (dy === 0 ? (Math.random() - 0.5) || 0.1 : Math.sign(dy)) * overlapY;
-            }
+            const signX = dx === 0 ? 1 : Math.sign(dx);
+            const signY = dy === 0 ? 1 : Math.sign(dy);
+            if (overlapX > 0) n.x += signX * overlapX;
+            if (overlapY > 0) n.y += signY * overlapY;
           }
         });
       });
@@ -1407,12 +1407,15 @@
 
     let x, y;
     if (parentId === state.rootId){
-      // Main branches fan out in a circle around the center card.
-      const GOLDEN_ANGLE = 137.508 * Math.PI / 180;
+      // Main branches are placed clockwise in fixed slots around the center card.
+      const MAIN_RING_SLOTS = 8;
       const idx = siblings.length;
-      const baseRadius = 260;
-      const radius = baseRadius + Math.floor(idx / 6) * 110; // widen the ring as more branches join
-      const angle = idx * GOLDEN_ANGLE;
+      const ring = Math.floor(idx / MAIN_RING_SLOTS);
+      const slot = idx % MAIN_RING_SLOTS;
+      const ANGLE_STEP = 2 * Math.PI / MAIN_RING_SLOTS;
+      const baseRadius = 340;
+      const radius = baseRadius + ring * 140; // widen the ring as more branches join
+      const angle = slot * ANGLE_STEP;
       x = parent.x + Math.cos(angle) * radius;
       y = parent.y + Math.sin(angle) * radius;
     } else {
@@ -2110,8 +2113,18 @@
   const bgCurrentColorText = document.getElementById('bg-current-color-text');
   let bgDragHistoryPushed = false;
 
+  function normalizeHex(hex){
+    const value = String(hex || '').trim();
+    if (/^#([0-9a-fA-F]{6})$/.test(value)) return value.toLowerCase();
+    const short = value.match(/^#([0-9a-fA-F]{3})$/);
+    if (short){
+      return '#' + short[1][0] + short[1][0] + short[1][1] + short[1][1] + short[1][2] + short[1][2];
+    }
+    return null;
+  }
   function applyBackground(){
-    const bg = state.background || DEFAULT_BG;
+    const bg = normalizeHex(state.background) || DEFAULT_BG;
+    state.background = bg;
     worldWrap.style.backgroundColor = bg;
     bgColorPicker.value = bg;
     bgCurrentColorText.textContent = bg;
@@ -2120,7 +2133,9 @@
     });
   }
   function setBackground(hex){
-    state.background = rgbToHex(...Object.values(hexToRgb(hex)));
+    const normalized = normalizeHex(hex);
+    if (!normalized) return;
+    state.background = normalized;
     applyBackground();
     scheduleAutosave();
   }
