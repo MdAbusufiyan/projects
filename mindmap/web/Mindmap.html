@@ -210,8 +210,6 @@
   .node.editing-note .note-preview{ display:none; }
 
   #search-wrap{
-    position:fixed; top:20px; right:20px;
-    z-index:100;
     display:flex; align-items:center;
   }
   #search-box{
@@ -235,7 +233,7 @@
   .node.search-dim{ opacity: 0.28; }
 
   #tab-bar{
-    position:fixed; top:110px; left:50%; transform:translateX(-50%);
+    position:fixed; top:20px; left:50%; transform:translateX(-50%);
     z-index:99; display:flex; align-items:center; gap:6px;
     background:var(--paper); border-radius:100px; box-shadow:var(--shadow);
     border:1px solid rgba(28,27,25,0.08); padding:5px 6px;
@@ -270,11 +268,11 @@
   #tab-add:hover{ background:rgba(28,27,25,0.14); }
 
   #stats{
-    position:fixed; top:110px; right:20px; z-index:99;
     font-size:20px; color:var(--ink-soft); background:var(--paper);
     padding:6px 12px; border-radius:100px; box-shadow:var(--shadow);
     border:1px solid rgba(28,27,25,0.08);
     font-family: caveat;
+    white-space:nowrap;
   }
   .node-btn{
     width:24px; height:24px;
@@ -294,43 +292,59 @@
   .node-btn.add{ background:var(--ink); color:var(--canvas); border-color:var(--ink); }
   .node-btn.collapse-toggle{ opacity:1; }
 
+  #home-btn{
+    position:fixed; top:20px; left:20px; z-index:101;
+    display:flex; align-items:center; gap:6px;
+    background:var(--paper); border:1px solid rgba(28,27,25,0.1);
+    box-shadow:var(--shadow); border-radius:100px;
+    padding:8px 16px 8px 12px;
+    font-family:'Inter', sans-serif; font-weight:600; font-size:13px;
+    color:var(--ink); text-decoration:none; cursor:pointer;
+    transition: background .12s ease, transform .1s ease;
+  }
+  #home-btn:hover{ background:rgba(28,27,25,0.06); }
+  #home-btn:active{ transform:scale(0.97); }
+  #home-btn svg{ width:16px; height:16px; flex-shrink:0; }
+
+  #right-controls{
+    position:fixed; top:20px; right:20px;
+    z-index:100;
+    display:flex; flex-direction:column; align-items:flex-end; gap:10px;
+    max-width:min(60vw, 260px);
+  }
+
+  #right-sidebar{
+    position:fixed; top:76px; left:20px; bottom:20px;
+    z-index:100;
+    display:flex; flex-direction:column; align-items:flex-start; gap:12px;
+    max-height:calc(100vh - 96px);
+    overflow-y:auto; overflow-x:visible;
+    scrollbar-width:none;
+    padding-bottom:4px;
+  }
+  #right-sidebar::-webkit-scrollbar{ display:none; }
+  #right-sidebar > *{ flex-shrink:0; }
+
   #toolbar{
-    position:fixed; top:20px; left:50%; transform:translateX(-50%);
     background:var(--paper);
     border-radius:18px;
     box-shadow:var(--shadow);
-    display:flex; align-items:stretch; gap:0;
-    padding:6px 8px;
-    z-index:100;
+    display:flex; flex-direction:column; align-items:center; gap:0;
+    padding:10px 6px;
     border:1px solid rgba(28,27,25,0.08);
+    min-width:52px;
   }
   .tb-section{
-    display:flex; align-items:flex-start; gap:6px;
-    padding:0 8px;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    padding:8px 0;
   }
-  .tb-section + .tb-section{ border-left:1px solid rgba(28,27,25,0.1); }
+  .tb-section + .tb-section{ border-left:none; border-top:1px solid rgba(28,27,25,0.1); }
   .tb-section-title{
-    font-family:'Caveat', cursive;
-    font-weight:700;
-    font-size:13px;
-    line-height:1;
-    color:var(--ink-soft);
-    white-space:nowrap;
-    position:absolute;
-    left:50%;
-    top:100%;
-    transform:translate(-50%, -2px);
-    padding:0 6px 2px;
-    background:var(--paper);
-    pointer-events:none;
-    z-index:1;
+    display:none;
   }
-  .tb-group{ display:flex; gap:2px; padding:0 2px; }
-  .tb-group + .tb-group{ border-left:1px solid rgba(28,27,25,0.08); margin-left:2px; padding-left:8px; }
-  .tb-section-anchor{ position:relative; display:flex; padding-bottom:14px; }
-  .tb-section-title.control-tag{ transform:translate(-46%, -2px); }
-  .tb-section-title.draw-tag{ transform:translate(-50%, -2px); }
-  .tb-section-title.save-tag{ transform:translate(-50%, -2px); }
+  .tb-group{ display:flex; flex-direction:column; gap:2px; padding:2px 0; }
+  .tb-group + .tb-group{ border-left:none; border-top:1px solid rgba(28,27,25,0.08); margin-left:0; margin-top:2px; padding-top:8px; padding-left:0; }
+  .tb-section-anchor{ position:relative; display:flex; flex-direction:column; padding-bottom:0; }
   @keyframes dash-flow{
     from { stroke-dashoffset: 0; }
     to { stroke-dashoffset: -28; }
@@ -347,70 +361,71 @@
   .tb-btn:active{ background:rgba(28,27,25,0.1); }
   .tb-btn svg{ width:18px; height:18px; }
   .tb-label{
-    font-family:'Caveat', cursive; font-weight:700; font-size:22px;
-    padding:0 12px 0 12px; white-space:nowrap; letter-spacing:.2px;
+    font-family:'Caveat', cursive; font-weight:700; font-size:20px;
+    padding:0 0 8px; white-space:nowrap; letter-spacing:.2px;
+    text-align:center;
   }
 
   #palette{
-    position:fixed; left:20px; top:50%; transform:translateY(-50%);
-    display:flex; flex-direction:column; gap:8px;
+    position:fixed; right:20px; top:50%; transform:translateY(-50%);
+    display:flex; flex-direction:column; gap:6px;
     z-index:100;
-    width:220px;
+    width:168px;
   }
   .palette-card{
-    background:var(--paper); border-radius:16px; box-shadow:var(--shadow);
-    padding:10px;
+    background:var(--paper); border-radius:12px; box-shadow:var(--shadow);
+    padding:7px 8px;
     border:1px solid rgba(28,27,25,0.08);
   }
   .palette-card-header{
-    display:flex; align-items:center; justify-content:space-between; gap:12px;
-    font-family:'Caveat', cursive; font-weight:700; font-size:18px;
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+    font-family:'Caveat', cursive; font-weight:700; font-size:15px;
     color:var(--ink-soft); cursor:pointer; user-select:none;
-    padding:0 2px 4px;
+    padding:0 1px 2px;
   }
-  .palette-card-header::after{ content:'+'; font-family:'Inter', sans-serif; font-size:14px; }
+  .palette-card-header::after{ content:'+'; font-family:'Inter', sans-serif; font-size:12px; }
   .palette-card.open .palette-card-header::after{ content:'−'; }
   .palette-card:not(.open) .palette-card-body{ display:none !important; }
-  .palette-card-body{ padding-top:7px; }
-  #palette-maker{ display:flex; flex-direction:column; gap:9px; }
+  .palette-card-body{ padding-top:5px; }
+  #palette-maker{ display:flex; flex-direction:column; gap:7px; }
   #fixed-colors{
     display:grid;
     grid-template-columns:repeat(7, 1fr);
-    gap:6px;
+    gap:4px;
   }
-  #current-color-row, #bg-current-color-row{ display:flex; align-items:center; gap:10px; border-top:1px solid rgba(28,27,25,0.1); padding-top:9px; }
-  #bg-fixed-colors{ display:grid; grid-template-columns:repeat(7, 1fr); gap:6px; }
+  #current-color-row, #bg-current-color-row{ display:flex; align-items:center; gap:6px; border-top:1px solid rgba(28,27,25,0.1); padding-top:6px; }
+  #bg-fixed-colors{ display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; }
   #bg-color-picker{
-    width:44px; height:34px; padding:0;
+    width:32px; height:26px; padding:0;
     border:1px solid rgba(28,27,25,0.16);
-    border-radius:10px; background:transparent; cursor:pointer;
+    border-radius:8px; background:transparent; cursor:pointer;
   }
   #bg-color-picker::-webkit-color-swatch-wrapper{ padding:0; }
-  #bg-color-picker::-webkit-color-swatch{ border:none; border-radius:9px; }
-  #bg-color-picker::-moz-color-swatch{ border:none; border-radius:9px; }
-  #bg-current-color-text{ font-family:'Inter', sans-serif; font-size:12px; color:var(--ink-soft); min-width:0; }
+  #bg-color-picker::-webkit-color-swatch{ border:none; border-radius:7px; }
+  #bg-color-picker::-moz-color-swatch{ border:none; border-radius:7px; }
+  #bg-current-color-text{ font-family:'Inter', sans-serif; font-size:10px; color:var(--ink-soft); min-width:0; }
   .palette-small-label{
     font-family:'Inter', sans-serif;
-    font-size:11px;
+    font-size:9.5px;
     font-weight:700;
     color:var(--ink-soft);
   }
   #color-picker{
-    width:44px; height:34px; padding:0;
+    width:32px; height:26px; padding:0;
     border:1px solid rgba(28,27,25,0.16);
-    border-radius:10px; background:transparent; cursor:pointer;
+    border-radius:8px; background:transparent; cursor:pointer;
   }
   #color-picker::-webkit-color-swatch-wrapper{ padding:0; }
-  #color-picker::-webkit-color-swatch{ border:none; border-radius:9px; }
-  #color-picker::-moz-color-swatch{ border:none; border-radius:9px; }
+  #color-picker::-webkit-color-swatch{ border:none; border-radius:7px; }
+  #color-picker::-moz-color-swatch{ border:none; border-radius:7px; }
   #current-color-text{
     font-family:'Inter', sans-serif;
-    font-size:12px;
+    font-size:10px;
     color:var(--ink-soft);
     min-width:0;
   }
   .swatch{
-    width:100%; aspect-ratio:1; border-radius:8px; cursor:pointer;
+    width:100%; aspect-ratio:1; border-radius:6px; cursor:pointer;
     border:1.5px solid transparent;
     transition:transform .1s ease, border-color .1s ease;
   }
@@ -419,23 +434,23 @@
   #palette-thread{
     display:flex;
     flex-direction:column;
-    gap:6px;
+    gap:5px;
   }
   .palette-caption{
     font-family:'Inter', sans-serif;
-    font-size:10px;
+    font-size:9px;
     font-weight:700;
     text-transform:uppercase;
     color:var(--ink-soft);
   }
-  .palette-toggle-row{ display:flex; gap:5px; }
+  .palette-toggle-row{ display:flex; gap:4px; }
   .palette-thread-btn{
     flex:1;
     border:1px solid rgba(28,27,25,0.15);
     background:transparent;
-    border-radius:8px;
-    padding:5px 8px;
-    font-size:12px;
+    border-radius:7px;
+    padding:4px 5px;
+    font-size:10.5px;
     cursor:pointer;
     color:var(--ink);
   }
@@ -445,14 +460,27 @@
     border-color:var(--ink);
   }
 
+  #hint-toggle{
+    position:fixed; bottom:18px; right:20px; z-index:100;
+    width:38px; height:38px; border-radius:50%;
+    background:var(--paper); border:1px solid rgba(28,27,25,0.1);
+    box-shadow:var(--shadow); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--ink); font-family:'Caveat', cursive; font-weight:700; font-size:19px;
+    transition: background .12s ease, transform .1s ease;
+  }
+  #hint-toggle:hover{ background:rgba(28,27,25,0.06); }
+  #hint-toggle.active{ background:var(--ink); color:var(--canvas); border-color:var(--ink); }
+
   #hint{
-    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    position:fixed; bottom:68px; right:20px;
     color:var(--ink-soft); background:var(--paper);
     padding:9px 14px; border-radius:16px; box-shadow:var(--shadow);
     z-index:100; border:1px solid rgba(28,27,25,0.08);
-    display:flex; gap:10px; max-width:min(78vw, 760px); overflow-x:auto;
+    display:none; gap:10px; max-width:min(78vw, 620px); overflow-x:auto;
     scrollbar-width:none;
   }
+  #hint.open{ display:flex; }
   #hint::-webkit-scrollbar{ display:none; }
   .hint-item{
     min-width:72px;
@@ -472,10 +500,9 @@
   }
 
   #zoom-indicator{
-    position:fixed; bottom:18px; right:20px;
     background:var(--paper); border-radius:100px; box-shadow:var(--shadow);
     padding:6px 6px 6px 14px; display:flex; align-items:center; gap:8px;
-    font-size:13px; color:var(--ink-soft); z-index:100;
+    font-size:13px; color:var(--ink-soft);
     border:1px solid rgba(28,27,25,0.08);
   }
 
@@ -503,7 +530,7 @@
   }
 
   #shape-panel{
-    position:fixed; left:20px; bottom:80px;
+    position:fixed; right:20px; bottom:80px;
     background:var(--paper); border-radius:16px; box-shadow:var(--shadow);
     border:1px solid rgba(28,27,25,0.08);
     padding:10px; display:none; flex-direction:column; gap:8px;
@@ -670,6 +697,27 @@
   <div id="select-box"></div>
 </div>
 
+<a id="home-btn" href="https://chooogle.com" title="Home">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-6h6v6"/></svg>
+  Home
+</a>
+
+<div id="right-controls">
+  <div id="search-wrap">
+    <input id="search-box" type="text" placeholder="Search nodes…">
+    <div id="search-toggle" title="Search (Ctrl/Cmd+F)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+    </div>
+  </div>
+  <div id="stats"></div>
+  <div id="zoom-indicator">
+    <button class="tb-btn" id="zoom-out" style="width:26px;height:26px;">–</button>
+    <span id="zoom-pct">100%</span>
+    <button class="tb-btn" id="zoom-in" style="width:26px;height:26px;">+</button>
+  </div>
+</div>
+
+<div id="right-sidebar">
 <div id="toolbar">
   <span class="tb-label">Branch</span>
   <div class="tb-section">
@@ -760,19 +808,12 @@
     </div>
   </div>
 </div>
+</div><!-- /right-sidebar -->
 
 <div id="tab-bar">
   <div id="tab-list"></div>
   <button id="tab-add" title="New mind map">+</button>
 </div>
-
-<div id="search-wrap">
-  <input id="search-box" type="text" placeholder="Search nodes…">
-  <div id="search-toggle" title="Search (Ctrl/Cmd+F)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-  </div>
-</div>
-<div id="stats"></div>
 
 <div id="shape-panel">
   <div class="sp-row" id="sp-label-row">
@@ -867,6 +908,7 @@
   </div>
 </div>
 
+<button id="hint-toggle" title="Shortcuts">?</button>
 <div id="hint">
   <span class="hint-item"><kbd>Tab</kbd><span class="hint-title">Add child</span></span>
   <span class="hint-item"><kbd>Enter</kbd><span class="hint-title">Add sibling</span></span>
@@ -876,12 +918,6 @@
   <span class="hint-item"><kbd>Space+drag</kbd><span class="hint-title">Pan</span></span>
   <span class="hint-item"><kbd>Ctrl+scroll</kbd><span class="hint-title">Zoom</span></span>
   <span class="hint-item"><kbd>Double-click</kbd><span class="hint-title">Collapse</span></span>
-</div>
-
-<div id="zoom-indicator">
-  <button class="tb-btn" id="zoom-out" style="width:26px;height:26px;">–</button>
-  <span id="zoom-pct">100%</span>
-  <button class="tb-btn" id="zoom-in" style="width:26px;height:26px;">+</button>
 </div>
 
 <div id="confirm-overlay">
@@ -1280,6 +1316,82 @@
     return hslToHex((base.h + hueShift + 360) % 360, satShift, lightShift);
   }
 
+  // ---------- Card collision / auto-adjust ----------
+  const CARD_GAP = 30;
+  function resolveCollisions(nodeIds){
+    const ids = (nodeIds || []).filter(id => state.nodes[id]);
+    if (!ids.length) return false;
+    const nodeEls = Array.from(world.querySelectorAll('.node'));
+    const rects = {};
+    nodeEls.forEach(el => {
+      const id = el.dataset.id;
+      if (!state.nodes[id]) return;
+      rects[id] = { w: el.offsetWidth, h: el.offsetHeight };
+    });
+    let changed = false;
+    for (let iter = 0; iter < 8; iter++){
+      let anyOverlap = false;
+      ids.forEach(id => {
+        const n = state.nodes[id];
+        const r = rects[id];
+        if (!r) return;
+        nodeEls.forEach(otherEl => {
+          const oid = otherEl.dataset.id;
+          if (oid === id) return;
+          const on = state.nodes[oid];
+          const or_ = rects[oid];
+          if (!on || !or_) return;
+          const dx = n.x - on.x;
+          const dy = n.y - on.y;
+          const minX = (r.w + or_.w) / 2 + CARD_GAP;
+          const minY = (r.h + or_.h) / 2 + CARD_GAP;
+          if (Math.abs(dx) < minX && Math.abs(dy) < minY){
+            anyOverlap = true;
+            changed = true;
+            const overlapX = minX - Math.abs(dx);
+            const overlapY = minY - Math.abs(dy);
+            if (overlapX < overlapY){
+              n.x += (dx === 0 ? (Math.random() - 0.5) || 0.1 : Math.sign(dx)) * overlapX;
+            } else {
+              n.y += (dy === 0 ? (Math.random() - 0.5) || 0.1 : Math.sign(dy)) * overlapY;
+            }
+          }
+        });
+      });
+      if (!anyOverlap) break;
+    }
+    if (changed){
+      ids.forEach(id => {
+        const n = state.nodes[id];
+        const el = world.querySelector(`.node[data-id="${id}"]`);
+        if (el){ el.style.left = n.x + 'px'; el.style.top = n.y + 'px'; }
+      });
+    }
+    return changed;
+  }
+
+  // Figures out which way (left/right, +1/-1) a branch is already growing,
+  // by walking up to its parent/grandparent, or by looking at its own existing
+  // children if it's a top-level branch off the root.
+  function branchDirection(parentId){
+    const parent = state.nodes[parentId];
+    if (!parent) return 1;
+    if (parent.parent){
+      const gp = state.nodes[parent.parent];
+      if (gp){
+        const dx = parent.x - gp.x;
+        if (Math.abs(dx) > 1) return dx >= 0 ? 1 : -1;
+        return branchDirection(parent.parent);
+      }
+    }
+    const kids = children(parentId);
+    if (kids.length){
+      const avgDx = kids.reduce((sum, k) => sum + (k.x - parent.x), 0) / kids.length;
+      if (Math.abs(avgDx) > 1) return avgDx >= 0 ? 1 : -1;
+    }
+    return 1;
+  }
+
   function addChild(parentId, colorOverride){
     const parent = state.nodes[parentId];
     if (!parent) return null;
@@ -1292,15 +1404,34 @@
     } else {
       color = colorOverride || nestedBranchColor(parent, siblings);
     }
+
+    let x, y;
+    if (parentId === state.rootId){
+      // Main branches fan out in a circle around the center card.
+      const GOLDEN_ANGLE = 137.508 * Math.PI / 180;
+      const idx = siblings.length;
+      const baseRadius = 260;
+      const radius = baseRadius + Math.floor(idx / 6) * 110; // widen the ring as more branches join
+      const angle = idx * GOLDEN_ANGLE;
+      x = parent.x + Math.cos(angle) * radius;
+      y = parent.y + Math.sin(angle) * radius;
+    } else {
+      // Sub-branches keep growing outward in whichever direction that branch already leans.
+      const dir = branchDirection(parentId);
+      x = parent.x + dir * 200;
+      y = parent.y + siblings.length * 64;
+    }
+
     state.nodes[id] = {
       id, parent: parentId, text: 'New idea', note: '',
-      x: parent.x + 200, y: parent.y + (siblings.length * 80) - (siblings.length>0? 40*siblings.length:0),
+      x, y,
       color,
       collapsed: false,
       depth: (parent.depth||0) + 1
     };
     parent.collapsed = false;
     renderAll();
+    if (resolveCollisions([id])) renderLinks(visibleNodes());
     selectNode(id);
     startEditing(id);
     return id;
@@ -2232,7 +2363,14 @@
       }
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onUp);
-      if (!moved) history.pop();
+      if (!moved){ history.pop(); }
+      else {
+        const nodeIds = origins.filter(o => o.kind === 'node').map(o => o.id);
+        if (nodeIds.length && resolveCollisions(nodeIds)){
+          renderLinks(visibleNodes());
+          renderShapes();
+        }
+      }
     }
     pushHistory();
     document.addEventListener('mousemove', onMove);
@@ -2374,36 +2512,69 @@
 
   function autoArrange(){
     pushHistory();
-    const LEVEL_GAP = 220;
-    const SIBLING_GAP = 70;
+    const H_GAP = 90;   // horizontal breathing room between depth levels
+    const V_GAP = 26;   // vertical breathing room between sibling cards
 
-    function subtreeHeight(id){
-      const kids = children(id);
-      if (kids.length === 0 || state.nodes[id].collapsed) return 1;
-      return kids.reduce((sum,c) => sum + subtreeHeight(c.id), 0);
+    const sizeCache = {};
+    function getSize(id){
+      if (sizeCache[id]) return sizeCache[id];
+      const el = world.querySelector(`.node[data-id="${id}"]`);
+      const size = { w: el ? el.offsetWidth : 140, h: el ? el.offsetHeight : 50 };
+      sizeCache[id] = size;
+      return size;
     }
-    function layout(id, depth, yOffsetUnits){
+
+    // Pixel-accurate subtree height so tall/wrapped cards never overlap their siblings.
+    function subtreeHeight(id){
+      const n = state.nodes[id];
+      const kids = children(id);
+      const ownH = getSize(id).h;
+      if (kids.length === 0 || n.collapsed) return ownH;
+      let total = 0;
+      kids.forEach((k, i) => {
+        total += subtreeHeight(k.id);
+        if (i < kids.length - 1) total += V_GAP;
+      });
+      return Math.max(total, ownH);
+    }
+
+    // Widest card per depth level, so columns are spaced by real card width, not a guess.
+    const depthMaxWidth = {};
+    function collectWidths(id, depth){
+      depthMaxWidth[depth] = Math.max(depthMaxWidth[depth] || 0, getSize(id).w);
+      const n = state.nodes[id];
+      if (n.collapsed) return;
+      children(id).forEach(k => collectWidths(k.id, depth + 1));
+    }
+    collectWidths(state.rootId, 0);
+    const maxDepth = Math.max(0, ...Object.keys(depthMaxWidth).map(Number));
+    const depthX = { 0: 0 };
+    for (let d = 1; d <= maxDepth; d++){
+      const prevW = depthMaxWidth[d-1] || 140;
+      const curW = depthMaxWidth[d] || 140;
+      depthX[d] = depthX[d-1] + prevW/2 + curW/2 + H_GAP;
+    }
+
+    function layout(id, depth, yCenter){
       const n = state.nodes[id];
       n.depth = depth;
-      n.x = depth * LEVEL_GAP;
+      n.x = depthX[depth];
+      n.y = yCenter;
       const kids = children(id);
-      if (n.collapsed || kids.length === 0){
-        n.y = (yOffsetUnits) * SIBLING_GAP;
-        return;
-      }
-      let cursor = yOffsetUnits;
-      const positions = [];
-      kids.forEach(k => {
-        const h = subtreeHeight(k.id);
-        layout(k.id, depth+1, cursor + h/2 - 0.5);
-        positions.push(state.nodes[k.id].y);
-        cursor += h;
+      if (n.collapsed || kids.length === 0) return;
+      const heights = kids.map(k => subtreeHeight(k.id));
+      const totalH = heights.reduce((a,b) => a+b, 0) + V_GAP * (kids.length - 1);
+      let cursor = yCenter - totalH/2;
+      kids.forEach((k, i) => {
+        const h = heights[i];
+        layout(k.id, depth + 1, cursor + h/2);
+        cursor += h + V_GAP;
       });
-      n.y = (positions.reduce((a,b)=>a+b,0)) / positions.length;
     }
-    const totalH = subtreeHeight(state.rootId);
-    layout(state.rootId, 0, totalH/2 - 0.5);
+    layout(state.rootId, 0, 0);
     renderAll();
+    // Safety pass: guarantees no residual overlap even with unusual card sizes.
+    if (resolveCollisions(Object.keys(state.nodes))) renderLinks(visibleNodes());
     recenter();
   }
 
@@ -2790,9 +2961,20 @@
   document.getElementById('btn-recenter').onclick = recenter;
   document.getElementById('btn-auto').onclick = autoArrange;
 
+  const hintEl = document.getElementById('hint');
+  const hintToggleBtn = document.getElementById('hint-toggle');
+  hintToggleBtn.addEventListener('click', () => {
+    const willOpen = !hintEl.classList.contains('open');
+    hintEl.classList.toggle('open', willOpen);
+    hintToggleBtn.classList.toggle('active', willOpen);
+  });
+
   const searchWrap = document.getElementById('search-wrap');
   const searchBox = document.getElementById('search-box');
-  document.getElementById('search-toggle').addEventListener('click', () => openSearch());
+  document.getElementById('search-toggle').addEventListener('click', () => {
+    if (searchWrap.classList.contains('open')) closeSearch();
+    else openSearch();
+  });
   function openSearch(){
     searchWrap.classList.add('open');
     searchBox.focus();
