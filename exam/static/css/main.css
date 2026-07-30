@@ -40,6 +40,18 @@ a:hover{text-decoration:underline;}
 .flash-success{background:#e6f7ec;color:var(--success);border:1px solid #b7e4c7;}
 .flash-error{background:#fdeaea;color:var(--danger);border:1px solid #f5c2c2;}
 
+.demo-banner{
+  max-width:720px;
+  margin:16px auto;
+  padding:14px 18px;
+  border-left:4px solid var(--danger);
+  background:#fff2f2;
+  color:var(--danger);
+  border-radius:var(--radius);
+  font-size:14px;
+}
+.demo-banner strong{font-weight:700;}
+
 .btn{
   display:inline-block;padding:10px 20px;border-radius:var(--radius);
   border:1px solid transparent;font-size:14px;font-weight:600;cursor:pointer;

@@ -20,7 +20,7 @@ class Config:
 
     SESSION_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
-    SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "True") == "True"
+    SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE", "False") == "True"
     PERMANENT_SESSION_LIFETIME = 3600 * 6
 
     MAX_CONTENT_LENGTH = int(os.environ.get("MAX_UPLOAD_MB", 15)) * 1024 * 1024

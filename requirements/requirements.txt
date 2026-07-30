@@ -20,5 +20,3 @@ simple-websocket==1.1.0
 email-validator==2.2.0
 python-magic==0.4.27
 
-# Mindmap app
-Flask>=3.0.0
