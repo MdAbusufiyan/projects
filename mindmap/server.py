@@ -130,6 +130,10 @@ def index():
 def mindmap_index():
     return send_from_directory(MINDMAP_FOLDER, "Mindmap.html")
 
+@app.route("/green/")
+def green_index():
+    return send_from_directory(MINDMAP_FOLDER, "Green.html")
+
 
 @app.route("/mindmap/<path:path>")
 def mindmap_static(path):

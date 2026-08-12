@@ -7,6 +7,13 @@
     "license": "Apache-2.0"
   },
   {
+    "name": "GreenChemistry",
+    "description": "Introduction to GreenChemistry",
+    "url": "/green/",
+    "status": "Open Source",
+    "license": "Apache-2.0"
+  },
+  {
     "name": "LabBuddy",
     "description": "Laboratory assistant for pharmaceutical R&D",
     "url": "https://labbuddy.org",
