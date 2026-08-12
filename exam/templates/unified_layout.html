@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }} - {{ app_name }}</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f7fb;
+        --panel: #ffffff;
+        --panel-alt: #eef3f9;
+        --text: #14213d;
+        --muted: #64748b;
+        --accent: #2563eb;
+        --accent-2: #0f766e;
+        --border: #d7e2ee;
+        --danger: #dc2626;
+        --success: #15803d;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      a { color: var(--accent); text-decoration: none; }
+      .shell { max-width: 1200px; margin: 0 auto; padding: 24px; }
+      .topbar {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        color: white;
+        padding: 18px 24px;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        margin-bottom: 20px;
+      }
+      .topbar h1 { margin: 0 0 6px; font-size: 1.4rem; }
+      .topbar p { margin: 0; opacity: 0.95; }
+      .grid { display: grid; gap: 18px; grid-template-columns: 1.2fr 0.8fr; }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+      }
+      .muted { color: var(--muted); }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+      .btn {
+        display: inline-block; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border);
+        background: var(--panel-alt); color: var(--text); font-weight: 600; cursor: pointer;
+      }
+      .btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+      .btn.success { background: var(--success); color: white; border-color: var(--success); }
+      .btn.danger { background: var(--danger); color: white; border-color: var(--danger); }
+      .stack { display: grid; gap: 10px; }
+      .pill { display: inline-block; padding: 4px 8px; border-radius: 999px; background: #dbeafe; color: #1d4ed8; font-size: 0.85rem; margin-right: 6px; }
+      table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+      th, td { padding: 10px 8px; border-bottom: 1px solid var(--border); text-align: left; }
+      th { color: var(--muted); font-size: 0.9rem; }
+      .flash { padding: 12px 14px; border-radius: 10px; margin-bottom: 14px; }
+      .flash.error { background: #fee2e2; color: #991b1b; }
+      .flash.success { background: #dcfce7; color: #166534; }
+      .flash.warning { background: #fef3c7; color: #92400e; }
+      .footer { margin-top: 28px; color: var(--muted); font-size: 0.9rem; }
+      @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <div class="topbar">
+        <h1>{{ page_title }}</h1>
+        <p>{{ page_subtitle }}</p>
+      </div>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="flash {{ category|default('info') }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      {% if template_name == 'index.html' %}
+        <div class="grid">
+          <div class="card">
+            <h2>Welcome to the unified exam workspace</h2>
+            <p class="muted">This page now serves as the main entry point while the backend routes remain in place.</p>
+            <div class="actions">
+              <a class="btn primary" href="/professor/login">Professor Login</a>
+              <a class="btn" href="/professor/register">Professor Register</a>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Available actions</h2>
+            <div class="stack">
+              <div><span class="pill">Backend</span> Python Flask routes remain active</div>
+              <div><span class="pill">UI</span> Consolidated into one layout file</div>
+              <div><span class="pill">Storage</span> Uploads and database remain unchanged</div>
+            </div>
+          </div>
+        </div>
+      {% elif template_name == 'errors/404.html' %}
+        <div class="card">
+          <h2>Page not found</h2>
+          <p class="muted">The requested route does not exist or is no longer available.</p>
+          <div class="actions">
+            <a class="btn primary" href="/">Return home</a>
+          </div>
+        </div>
+      {% elif template_name == 'errors/413.html' %}
+        <div class="card">
+          <h2>Upload limit exceeded</h2>
+          <p class="muted">Files larger than the configured size are not accepted.</p>
+          <div class="actions">
+            <a class="btn primary" href="/">Return home</a>
+          </div>
+        </div>
+      {% else %}
+        <div class="card">
+          <h2>{{ page_title }}</h2>
+          <p class="muted">The existing backend routes are still active; this layout provides a single, formatted shell.</p>
+          <p>{{ page_subtitle }}</p>
+          <div class="actions">
+            <a class="btn primary" href="/">Back to home</a>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="footer">The original exam functionality remains backed by the Python routes and database models.</div>
+    </div>
+  </body>
+</html>

@@ -3,6 +3,7 @@ import os
 import re
 import threading
 import webbrowser
+from http import cookiejar
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
 
@@ -15,6 +16,12 @@ WEB_FOLDER = os.path.join(os.path.dirname(__file__), "web")
 MINDMAP_FOLDER = os.path.join(WEB_FOLDER, "branch")
 
 app = Flask(__name__, static_folder=WEB_FOLDER)
+COOKIE_JAR = cookiejar.CookieJar()
+
+
+class _NoRedirectHandler(urllib_request.HTTPRedirectHandler):
+    def redirect_request(self, req, response, code, msg, headers):
+        return None
 
 
 def _rewrite_internal_links(body):
@@ -50,11 +57,18 @@ def _proxy_to_exam(path, method, query_string, headers, data):
             continue
         upstream_request.add_header(header_name, header_value)
 
+    if "cookie" in headers:
+        upstream_request.add_header("Cookie", headers.get("Cookie"))
+
     if method in {"POST", "PUT", "PATCH"}:
         upstream_request.data = data
 
     try:
-        with urllib_request.urlopen(upstream_request, timeout=15) as upstream_response:
+        opener = urllib_request.build_opener(
+            _NoRedirectHandler,
+            urllib_request.HTTPCookieProcessor(COOKIE_JAR),
+        )
+        with opener.open(upstream_request, timeout=15) as upstream_response:
             body = upstream_response.read()
 
             headers_out = {
@@ -80,6 +94,7 @@ def _proxy_to_exam(path, method, query_string, headers, data):
                 headers_out["Location"] = _prefix_for_exam(location)
 
             response = Response(body, status=upstream_response.status, headers=headers_out)
+            response.autocorrect_location_header = False
             response.headers["Content-Type"] = content_type or "text/plain"
             return response
 
@@ -121,9 +136,9 @@ def mindmap_static(path):
     return send_from_directory(MINDMAP_FOLDER, path)
 
 
-@app.route("/exam")
-@app.route(MASKED_ROUTE_ROOT)
-@app.route(MASKED_ROUTE_ROOT + "<path:path>")
+@app.route("/exam", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+@app.route(MASKED_ROUTE_ROOT, methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
+@app.route(MASKED_ROUTE_ROOT + "<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 def exam_proxy(path=""):
     return _proxy_to_exam(
         path,
@@ -134,7 +149,7 @@ def exam_proxy(path=""):
     )
 
 
-@app.route("/<path:path>")
+@app.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 def static_files(path):
     local_path = os.path.join(WEB_FOLDER, path)
 
