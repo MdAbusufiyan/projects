@@ -2,14 +2,14 @@
   {
     "name": "MindMap",
     "description": "Browser based mind mapping software",
-    "url": "/mindmap/",
+    "url": "/Mindmap/",
     "status": "Open Source",
     "license": "Apache-2.0"
   },
   {
     "name": "GreenChemistry",
     "description": "Introduction to GreenChemistry",
-    "url": "/green/",
+    "url": "/Green Chemistry/",
     "status": "Open Source",
     "license": "Apache-2.0"
   },

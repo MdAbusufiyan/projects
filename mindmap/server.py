@@ -126,11 +126,11 @@ def index():
     return send_from_directory(WEB_FOLDER, "index.html")
 
 
-@app.route("/mindmap/")
+@app.route("/Mindmap/")
 def mindmap_index():
     return send_from_directory(MINDMAP_FOLDER, "Mindmap.html")
 
-@app.route("/green/")
+@app.route("/Green Chemistry/")
 def green_index():
     return send_from_directory(MINDMAP_FOLDER, "Green.html")
 
