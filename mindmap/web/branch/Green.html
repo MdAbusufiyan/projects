@@ -10,7 +10,10 @@
 a{color:var(--blue2);text-underline-offset:3px} a:hover{color:var(--green)}
 .site-header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 .header-inner{max-width:var(--max);margin:auto;padding:12px 22px;display:flex;align-items:center;justify-content:space-between;gap:18px}
-.logo{font-weight:800;color:var(--navy);letter-spacing:.3px} .logo span{color:var(--green)}
+.header-brand{display:flex;align-items:center;gap:14px}
+    .home-link{display:inline-flex;align-items:center;justify-content:center;padding:0 14px;height:42px;border:1px solid var(--line);border-radius:12px;background:#fff;color:#000;text-decoration:none;font-size:1rem;font-weight:700;transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.home-link:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(0,0,0,.08);background:var(--accent)}
+.logo{font-weight:800;color:var(--navy);letter-spacing:.3px;text-decoration:none;font-size:1rem} .logo:hover{text-decoration:none} .logo span{color:var(--green)}
 .nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end} .nav a{font-size:.8rem;text-decoration:none;color:var(--muted);padding:6px 9px;border-radius:5px} .nav a:hover{background:var(--accent);color:var(--navy)}
 main{max-width:var(--max);margin:auto;padding:0 22px 70px}
 .hero{min-height:72vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:70px 20px;position:relative;overflow:hidden;background:linear-gradient(135deg,#e8f7ed 0%,#fff 48%,#e8f3f9 100%);border-bottom:8px solid var(--green)}
@@ -63,7 +66,7 @@ main{max-width:var(--max);margin:auto;padding:0 22px 70px}
 </style>
 </head>
 <body>
-<header class="site-header"><div class="header-inner"><div class="logo">Green <span>Chemistry</span></div><nav class="nav">
+<header class="site-header"><div class="header-inner"><div class="header-brand"><a href="https://chooogle.com/" class="home-link" target="_blank" rel="noopener" aria-label="Home" title="chooogle.com">🏠︎</a><a href="#top" class="logo"><span>Green Chemistry</span></a></div><nav class="nav">
 <a href="#why">Why</a><a href="#history">History</a><a href="#what">What is it?</a><a href="#prevention">Prevention</a><a href="#principles">12 Principles</a><a href="#case">Case Study</a><a href="#conclusion">Conclusion</a><a href="#references">References</a></nav></div></header>
 <main>
 <section class="hero" id="top"><div class="hero-inner"><h1>Exploring the Key concepts of Green Chemistry</h1><div class="meta">Presented by: <strong>Abusufiyan</strong> &nbsp; · &nbsp; Website: <a href="https://labbuddy.org/" target="_blank" rel="noopener">Labbuddy.org</a></div></div></section>
