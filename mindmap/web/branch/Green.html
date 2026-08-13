@@ -52,8 +52,22 @@ main{margin:auto;padding:0 45px 70px}
 .t-item:nth-child(8) .t-card{--top:92px}
 .t-item:nth-child(9) .t-card{--top:34px}
 .t-item:nth-child(10) .t-card{--top:76px}
-@media(max-width:900px){.timeline-wrap{margin-left:-14px;margin-right:-14px}.timeline-wrap:before{text-align:left}.timeline{min-width:1880px}}
-@media(max-width:560px){.timeline-wrap{margin-top:34px;padding-left:14px;padding-right:14px}.timeline{min-width:1880px}.t-card{font-size:.72rem}}
+/* Portrait phones and tablets use a vertical version of the same milestone treatment. */
+@media(max-width:900px){
+  .timeline-wrap{margin-left:-14px;margin-right:-14px;padding:18px 14px 24px;overflow:hidden}
+  .timeline-wrap:before{content:"Timeline milestones";margin-bottom:12px;padding:0;text-align:left}
+  .timeline{min-width:0;width:100%;height:auto;padding:0;display:block}
+  .timeline:before{left:0;right:auto;top:0;bottom:0;width:58px;height:auto;border-radius:3px}
+  .t-item{width:100%;height:auto;min-height:84px;padding:10px 14px 10px 69px}
+  .t-card{position:relative;left:auto;top:auto !important;width:100%;min-height:64px;padding:10px 12px 10px 15px;transform:none}
+  .t-card.top,.t-card.bottom{top:auto;bottom:auto}
+  .t-card .t-stem{display:none}
+  .t-card:before{left:-40px;top:50%;border-top-width:8px;border-right:0;border-bottom-width:8px;border-left:20px solid #263f68;transform:translateY(-50%)}
+  .t-card:hover,.t-card:focus-within{transform:translateY(-2px)}
+  .t-year{left:-40px;top:0;transform:translate(-50%,0);width:48px;height:100%;font-size:.86rem}
+  .t-item:not(:last-child) .t-year:after{display:none}
+}
+@media(max-width:560px){.timeline-wrap{margin-top:34px}.t-card{font-size:.72rem}}
 .grid12{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px} .p-card{border:2px solid var(--navy);border-radius:14px;padding:18px;background:#fff;min-height:135px;box-shadow:0 2px 0 rgba(6,59,102,.05)} .p-num{font-size:1.5rem;font-weight:800;color:var(--blue2)} .p-card h3{margin:5px 0 6px;font-size:1rem} .p-card p{margin:0;color:var(--muted);font-size:.9rem}
 .epa-banner{margin:30px 0;border-radius:2px;overflow:hidden;box-shadow:0 8px 25px rgba(6,59,102,.12)} .epa-banner img{display:block;width:100%;height:auto}
 .principles-list{display:grid;grid-template-columns:1fr 1fr;gap:0 40px} .principle{padding:18px 0;border-bottom:1px solid var(--line)} .principle strong{color:var(--navy)}
