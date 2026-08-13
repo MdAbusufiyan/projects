@@ -20,7 +20,7 @@ COOKIE_JAR = cookiejar.CookieJar()
 
 
 class _NoRedirectHandler(urllib_request.HTTPRedirectHandler):
-    def redirect_request(self, req, response, code, msg, headers):
+    def redirect_request(self, req, response, code, msg, headers, newurl):
         return None
 
 
@@ -113,7 +113,12 @@ def _proxy_to_exam(path, method, query_string, headers, data):
             }
         }
 
+        location = headers_out.get("Location")
+        if location:
+            headers_out["Location"] = _prefix_for_exam(location)
+
         response = Response(body, status=exc.code, headers=headers_out)
+        response.autocorrect_location_header = False
         response.headers["Content-Type"] = exc.headers.get("Content-Type", "text/plain")
         return response
 

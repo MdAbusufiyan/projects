@@ -1,10 +1,9 @@
 import os
-from flask import Flask, render_template, request
-from flask_login import LoginManager
+from flask import Flask, render_template, request, redirect, url_for
+from flask_login import LoginManager, login_user
 from config import Config
 from extensions import db, socketio, csrf, limiter, bcrypt, login_manager, mail
 from models.models import Professor, Candidate
-from routes.auth import auth_bp
 from routes.professor import professor_bp
 from routes.candidate import candidate_bp
 from sockets.events import register_socket_events
@@ -22,7 +21,7 @@ def create_app():
     mail.init_app(app)
     socketio.init_app(app)
 
-    login_manager.login_view = "auth.professor_login"
+    login_manager.login_view = None
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -30,10 +29,25 @@ def create_app():
             return Professor.query.get(user_id.split(":", 1)[1])
         return None
 
-    app.register_blueprint(auth_bp)
     app.register_blueprint(professor_bp)
     app.register_blueprint(candidate_bp)
     csrf.exempt(candidate_bp)  # candidate API uses token-based session auth; CSRF handled via custom header check
+
+    @app.before_request
+    def use_workspace_professor():
+        """Temporary single-workspace access while professor auth is disabled."""
+        if request.blueprint != "professor":
+            return None
+
+        professor = Professor.query.order_by(Professor.created_at).first()
+        if professor is None:
+            professor = Professor(name="Workspace Owner", email="workspace-owner@local")
+            professor.set_password(os.urandom(32).hex())
+            db.session.add(professor)
+            db.session.commit()
+
+        login_user(professor, force=True)
+        return None
 
     register_socket_events()
 
@@ -52,7 +66,7 @@ def create_app():
 
     @app.route("/")
     def index():
-        return render_template("index.html")
+        return redirect(url_for("professor.dashboard"))
 
     @app.errorhandler(404)
     def not_found(e):
@@ -71,4 +85,4 @@ def create_app():
 app = create_app()
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port=5000, debug=False)
+    socketio.run(app, host="0.0.0.0", port=8520, debug=False)
