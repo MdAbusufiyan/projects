@@ -68,6 +68,22 @@ main{margin:auto;padding:0 45px 70px}
   .t-item:not(:last-child) .t-year:after{display:none}
 }
 @media(max-width:560px){.timeline-wrap{margin-top:34px}.t-card{font-size:.72rem}}
+/* Slide 8 — responsive case-study content for portrait phones and tablets. */
+@media(max-width:900px){
+  #case .case-layout{gap:22px}
+  #case .case-figures{grid-template-columns:1fr;gap:16px}
+  #case .case-figures figure{padding:8px}
+  #case .case-figures img{max-width:100%}
+  #case p,#case td,#case figcaption{overflow-wrap:anywhere}
+  #case .table-wrap{margin-top:20px;overflow:visible}
+  #case table{min-width:0;display:block}
+  #case thead{display:none}
+  #case tbody,#case tr,#case td{display:block;width:100%}
+  #case tr{margin:0 0 14px;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+  #case td{padding:12px 14px;border:0;background:#fff !important}
+  #case td:first-child{padding-bottom:8px;background:#edf8f0 !important;color:var(--navy);font-weight:800}
+  #case td + td{padding-top:0}
+}
 .grid12{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:28px} .p-card{border:2px solid var(--navy);border-radius:14px;padding:18px;background:#fff;min-height:135px;box-shadow:0 2px 0 rgba(6,59,102,.05)} .p-num{font-size:1.5rem;font-weight:800;color:var(--blue2)} .p-card h3{margin:5px 0 6px;font-size:1rem} .p-card p{margin:0;color:var(--muted);font-size:.9rem}
 .epa-banner{margin:30px 0;border-radius:2px;overflow:hidden;box-shadow:0 8px 25px rgba(6,59,102,.12)} .epa-banner img{display:block;width:100%;height:auto}
 .principles-list{display:grid;grid-template-columns:1fr 1fr;gap:0 40px} .principle{padding:18px 0;border-bottom:1px solid var(--line)} .principle strong{color:var(--navy)}
