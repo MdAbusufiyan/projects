@@ -11,6 +11,7 @@
 
   --font-heading: "Georgia", "Times New Roman", serif;
   --font-body: "Helvetica Neue", Arial, sans-serif;
+  padding: 0 45px;
 }
 
 * {
