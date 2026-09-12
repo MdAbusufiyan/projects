@@ -14,8 +14,15 @@
     "license": "Presentation"
   },
   {
+    "name": "SDS and MSDS",
+    "description": "Introduction to Safety Data Sheet and Material Safety Data Sheet",
+    "url": "/SDS and MSDS/",
+    "status": "Introductory",
+    "license": "Presentation"
+  },
+  {
     "name": "FlowChemistry v0.1",
-    "description": "Introduction to Flow Chemistry",
+    "description": "intial version of basic calculations in flow chemistry",
     "url": "/Flow Chemistry/",
     "status": "Version 1.0",
     "license": "Open Source"
