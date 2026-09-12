@@ -14,6 +14,13 @@
     "license": "Presentation"
   },
   {
+    "name": "FlowChemistry v0.1",
+    "description": "Introduction to Flow Chemistry",
+    "url": "/Flow Chemistry/",
+    "status": "Version 1.0",
+    "license": "Open Source"
+  },
+  {
     "name": "LabBuddy",
     "description": "Laboratory assistant for pharmaceutical R&D",
     "url": "https://labbuddy.org",

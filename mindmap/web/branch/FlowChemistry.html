@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Flow Chemistry Calculator</title>
+<style>
+  :root{
+    --bg:#1a1a1a; --bg2:#141414; --card:#232323; --card2:#2a2a2a;
+    --border:#3a3a3a; --text:#e5e5e5; --muted:#9a9a9a; --accent:#c9c9c9;
+    --stripe:#2e2e2e; --danger:#8a4a4a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Segoe UI',Roboto,Arial,sans-serif;
+    background:var(--bg); color:var(--text); padding:28px;
+  }
+  h1{font-size:1.5rem; margin:0 0 4px 0; font-weight:600; letter-spacing:0.01em;}
+  p.subtitle{color:var(--muted); margin:0 0 22px 0; font-size:0.88rem;}
+
+  .layout{max-width:1300px; margin:0 auto; display:flex; flex-direction:column; gap:18px;}
+
+  .card{
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:16px 18px; transition:border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover{border-color:#4a4a4a;}
+  .card h2{
+    font-size:0.95rem; margin:0 0 12px 0; color:var(--text); font-weight:600;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .card h2 .hint{font-size:0.72rem; color:var(--muted); font-weight:400;}
+
+  .row{display:grid; grid-template-columns:repeat(4,1fr); gap:12px;}
+  .row.two{grid-template-columns:repeat(2,1fr);}
+  .row.three{grid-template-columns:repeat(3,1fr);}
+
+  label{display:block; font-size:0.74rem; color:var(--muted); margin-bottom:4px;}
+  input[type="number"], input[type="text"], select{
+    width:100%; padding:7px 9px; border-radius:6px; border:1px solid var(--border);
+    background:var(--bg2); color:var(--text); font-size:0.85rem;
+    transition:border-color 0.15s ease, background 0.15s ease;
+  }
+  input:focus, select:focus{outline:none; border-color:#7a7a7a; background:#1c1c1c;}
+
+  .field{margin-bottom:10px;}
+
+  .stream-block{
+    background:var(--card2); border:1px solid var(--border); border-radius:8px;
+    padding:14px; margin-bottom:12px; animation:fadein 0.25s ease;
+  }
+  .stream-block .head{
+    display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;
+  }
+  .role-tag{
+    font-size:0.68rem; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--muted); border:1px solid var(--border); border-radius:4px; padding:2px 6px;
+  }
+  .btn{
+    border:1px solid var(--border); background:var(--card2); color:var(--text);
+    padding:6px 12px; border-radius:6px; font-size:0.8rem; cursor:pointer;
+    transition:background 0.15s ease, border-color 0.15s ease;
+  }
+  .btn:hover{background:#333333; border-color:#5a5a5a;}
+  .btn.remove{color:#d9a3a3; border-color:#5a3a3a;}
+  .btn.remove:hover{background:#3a2222;}
+  .btn.add{width:100%; margin-top:6px; padding:8px; font-size:0.82rem;}
+
+  .solvent-row{
+    display:grid; grid-template-columns:1.4fr 1fr 1.4fr auto; gap:10px; align-items:end;
+    background:var(--card2); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; margin-bottom:8px; animation:fadein 0.25s ease;
+  }
+
+  .computed{
+    margin-top:10px; padding-top:10px; border-top:1px dashed var(--border);
+    display:grid; grid-template-columns:repeat(2,1fr); gap:6px 16px;
+  }
+  .computed .item{display:flex; justify-content:space-between; font-size:0.82rem;}
+  .computed .item .k{color:var(--muted);}
+  .computed .item .v{color:var(--text); font-weight:600; font-variant-numeric:tabular-nums;}
+
+  table{width:100%; border-collapse:collapse; font-size:0.84rem;}
+  th, td{padding:8px 10px; text-align:right; border-bottom:1px solid var(--border);}
+  th:first-child, td:first-child{text-align:left;}
+  th{color:var(--muted); font-weight:500; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.03em;}
+  tbody tr{transition:background 0.15s ease;}
+  tbody tr:hover{background:var(--stripe);}
+  td.value{font-weight:600; font-variant-numeric:tabular-nums;}
+
+  .summary-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px;
+  }
+  .summary-item{
+    background:var(--card2); border:1px solid var(--border); border-radius:8px;
+    padding:12px; text-align:center;
+  }
+  .summary-item .num{font-size:1.25rem; font-weight:700; color:var(--text);}
+  .summary-item .lab{font-size:0.72rem; color:var(--muted); margin-top:2px;}
+
+  .formula-note{font-size:0.7rem; color:var(--muted); margin-top:4px;}
+
+  @keyframes fadein{
+    from{opacity:0; transform:translateY(-4px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+
+  .footer-note{
+    max-width:1300px; margin:20px auto 0; color:var(--muted); font-size:0.75rem; line-height:1.5;
+  }
+</style>
+</head>
+<body>
+
+<h1>Flow Chemistry Calculator</h1>
+<p class="subtitle">Add reagents and solvents freely, name each component, and pair every solvent with the stream it belongs to.</p>
+
+<div class="layout">
+
+  <!-- Global parameters -->
+  <div class="card">
+    <h2>Reactor &amp; Priming Parameters</h2>
+    <div class="row">
+      <div class="field">
+        <label>Reactor Volume V<sub>R</sub> (mL)</label>
+        <input type="number" id="vr" value="5" step="any">
+      </div>
+      <div class="field">
+        <label>Residence Time (min)</label>
+        <input type="number" id="rt" value="10" step="any">
+      </div>
+      <div class="field">
+        <label>Margin Factor</label>
+        <input type="number" id="margin" value="1.5" step="any">
+      </div>
+      <div class="field">
+        <label>No. of Discards</label>
+        <input type="number" id="ndisc" value="2" step="any">
+      </div>
+    </div>
+  </div>
+
+  <!-- Streams (KSM + reagents) -->
+  <div class="card">
+    <h2>Chemicals <span class="hint">KSM is the fixed reference (eq = 1). Add as many reagents as needed.</span></h2>
+    <div id="streams"></div>
+    <button class="btn add" id="addReagent">Add Reagent</button>
+  </div>
+
+  <!-- Solvents -->
+  <div class="card">
+    <h2>Solvents <span class="hint">Pair each solvent with the chemical stream it dilutes.</span></h2>
+    <div id="solvents"></div>
+    <button class="btn add" id="addSolvent">Add Solvent</button>
+  </div>
+
+  <!-- Summary table -->
+  <div class="card">
+    <h2>Stream Summary</h2>
+    <table id="summaryTable">
+      <thead>
+        <tr>
+          <th>Stream</th>
+          <th>Eq</th>
+          <th>Moles (mmol)</th>
+          <th>Volume (mL)</th>
+          <th>Conc (M)</th>
+          <th>Flow Rate (mL/min)</th>
+          <th>Prep Volume (mL)</th>
+        </tr>
+      </thead>
+      <tbody id="summaryBody"></tbody>
+    </table>
+    <div class="formula-note">Conc = moles / stream volume × 1000. Flow rate share ∝ eq / concentration, normalized so all streams sum to Q total.</div>
+  </div>
+
+  <!-- Top-line summary -->
+  <div class="card">
+    <h2>Overall Result</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <div class="num" id="sumTotalVol">-</div>
+        <div class="lab">Total formulation volume (mL)</div>
+      </div>
+      <div class="summary-item">
+        <div class="num" id="sumQtotal">-</div>
+        <div class="lab">Q total = V&#8320;/&#964; (mL/min)</div>
+      </div>
+      <div class="summary-item">
+        <div class="num" id="sumVT">-</div>
+        <div class="lab">Total prep volume V&#8340; (mL)</div>
+      </div>
+      <div class="summary-item">
+        <div class="num" id="sumCheck">-</div>
+        <div class="lab">Prep vol / Q per stream (should match, min)</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer-note">
+  Formulas: n(chemical) = Qty(g)/M.wt · reagent moles = KSM moles &times; eq (auto: Qty(g)=moles&times;M.wt) ·
+  stream volume = chemical volume + assigned solvent volumes · C = moles/stream volume &times;1000 ·
+  Q total = V<sub>R</sub>/&#964; · stream weight w = eq/C · Q<sub>stream</sub> = Q total &times; w/&Sigma;w ·
+  Vol required = V<sub>R</sub> &times; margin factor · margin volume = Vol required / no. of discards ·
+  V<sub>T</sub> = Vol required + margin volume · prep volume per stream = V<sub>T</sub> &times; w/&Sigma;w.
+</div>
+
+<script>
+let streamIdCounter = 0;
+let solventIdCounter = 0;
+let streams = [];   // {id, name, role, qty, density, mw, eq}
+let solvents = [];  // {id, name, volume, pairStreamId}
+
+function addStream(role, defaults){
+  const id = 's' + (streamIdCounter++);
+  streams.push(Object.assign({
+    id, role,
+    name: role === 'KSM' ? 'KSM' : ('Reagent ' + (streams.filter(s=>s.role==='Reagent').length + 1)),
+    qty: role === 'KSM' ? 2.4986698805 : 0,
+    density: role === 'KSM' ? 1.282 : 1.808,
+    mw: role === 'KSM' ? 163.06 : 213.9,
+    eq: role === 'KSM' ? 1 : 2.4
+  }, defaults || {}));
+  return id;
+}
+
+function addSolvent(name, volume, pairStreamId){
+  const id = 'v' + (solventIdCounter++);
+  solvents.push({ id, name: name || ('Solvent ' + (solvents.length + 1)), volume: volume || 0, pairStreamId });
+  return id;
+}
+
+// init defaults matching original sheet
+const ksmId = addStream('KSM');
+const reagentId = addStream('Reagent', { qty: 0, name: 'Reagent 1' });
+addSolvent('Solvent 1', 4.9973397611, ksmId);
+addSolvent('Solvent 2', 4.9973397611, reagentId);
+
+function fmt(x, d=5){
+  if (!isFinite(x)) return '-';
+  return Number(x).toFixed(d);
+}
+
+function renderStreams(){
+  const container = document.getElementById('streams');
+  container.innerHTML = '';
+  streams.forEach(s => {
+    const block = document.createElement('div');
+    block.className = 'stream-block';
+    block.dataset.id = s.id;
+    block.innerHTML = `
+      <div class="head">
+        <span class="role-tag">${s.role}</span>
+        ${s.role !== 'KSM' ? `<button class="btn remove" data-remove-stream="${s.id}">Remove</button>` : ''}
+      </div>
+      <div class="row two">
+        <div class="field">
+          <label>Name</label>
+          <input type="text" data-field="name" data-id="${s.id}" value="${s.name}">
+        </div>
+        <div class="field">
+          <label>${s.role === 'KSM' ? 'Mol Ratio (fixed)' : 'Mol Ratio (eq, relative to KSM)'}</label>
+          <input type="number" data-field="eq" data-id="${s.id}" value="${s.eq}" step="any" ${s.role==='KSM' ? 'disabled' : ''}>
+        </div>
+      </div>
+      <div class="row three">
+        <div class="field">
+          <label>${s.role === 'KSM' ? 'Qty (g)' : 'Qty (g) — auto from eq'}</label>
+          <input type="number" data-field="qty" data-id="${s.id}" value="${s.qty}" step="any" ${s.role!=='KSM' ? 'disabled' : ''}>
+        </div>
+        <div class="field">
+          <label>Density (g/mL)</label>
+          <input type="number" data-field="density" data-id="${s.id}" value="${s.density}" step="any">
+        </div>
+        <div class="field">
+          <label>M.wt (g/mol)</label>
+          <input type="number" data-field="mw" data-id="${s.id}" value="${s.mw}" step="any">
+        </div>
+      </div>
+      <div class="computed" data-computed="${s.id}"></div>
+    `;
+    container.appendChild(block);
+  });
+}
+
+function renderSolvents(){
+  const container = document.getElementById('solvents');
+  container.innerHTML = '';
+  solvents.forEach(v => {
+    const row = document.createElement('div');
+    row.className = 'solvent-row';
+    row.dataset.id = v.id;
+    const options = streams.map(s => `<option value="${s.id}" ${s.id===v.pairStreamId?'selected':''}>${s.name}</option>`).join('');
+    row.innerHTML = `
+      <div class="field">
+        <label>Name</label>
+        <input type="text" data-field="name" data-id="${v.id}" value="${v.name}">
+      </div>
+      <div class="field">
+        <label>Volume (mL)</label>
+        <input type="number" data-field="volume" data-id="${v.id}" value="${v.volume}" step="any">
+      </div>
+      <div class="field">
+        <label>Pair with</label>
+        <select data-field="pair" data-id="${v.id}">${options}</select>
+      </div>
+      <button class="btn remove" data-remove-solvent="${v.id}" style="height:36px;">Remove</button>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function readInputsIntoModel(){
+  document.querySelectorAll('[data-field][data-id]').forEach(el => {
+    const id = el.dataset.id;
+    const field = el.dataset.field;
+    const stream = streams.find(s => s.id === id);
+    const solvent = solvents.find(v => v.id === id);
+    if (stream){
+      if (field === 'name') stream.name = el.value;
+      else stream[field] = parseFloat(el.value) || 0;
+    } else if (solvent){
+      if (field === 'name') solvent.name = el.value;
+      else if (field === 'volume') solvent.volume = parseFloat(el.value) || 0;
+      else if (field === 'pair') solvent.pairStreamId = el.value;
+    }
+  });
+}
+
+function compute(){
+  const vr = parseFloat(document.getElementById('vr').value) || 0;
+  const rt = parseFloat(document.getElementById('rt').value) || 0;
+  const margin = parseFloat(document.getElementById('margin').value) || 0;
+  const ndisc = parseFloat(document.getElementById('ndisc').value) || 1;
+
+  const ksm = streams.find(s => s.role === 'KSM');
+  const ksmMol = ksm.mw ? ksm.qty / ksm.mw : 0;
+  const ksmVol = ksm.density ? ksm.qty / ksm.density : 0;
+
+  const results = {};
+  streams.forEach(s => {
+    let mol, qty, vol;
+    if (s.role === 'KSM'){
+      mol = ksmMol; qty = s.qty; vol = ksmVol;
+    } else {
+      mol = ksmMol * s.eq;
+      qty = mol * s.mw;
+      vol = s.density ? qty / s.density : 0;
+    }
+    results[s.id] = { mol, qty, vol, solventVol: 0 };
+  });
+
+  solvents.forEach(v => {
+    if (results[v.pairStreamId]) results[v.pairStreamId].solventVol += (v.volume || 0);
+  });
+
+  let totalFormulationVol = 0;
+  streams.forEach(s => {
+    const r = results[s.id];
+    r.streamVol = r.vol + r.solventVol;
+    r.conc = r.streamVol ? (r.mol / r.streamVol) * 1000 : 0;
+    r.w = r.conc ? s.eq / r.conc : 0;
+    totalFormulationVol += r.streamVol;
+  });
+
+  const sumW = streams.reduce((acc, s) => acc + results[s.id].w, 0);
+  const qtotal = rt ? vr / rt : 0;
+  const vReq = vr * margin;
+  const vMargin = ndisc ? vReq / ndisc : 0;
+  const vt = vReq + vMargin;
+
+  streams.forEach(s => {
+    const r = results[s.id];
+    r.q = sumW ? qtotal * (r.w / sumW) : 0;
+    r.prepVol = sumW ? vt * (r.w / sumW) : 0;
+    r.runCheck = r.q ? r.prepVol / r.q : 0;
+  });
+
+  return { results, totalFormulationVol, qtotal, vReq, vMargin, vt };
+}
+
+function renderComputed(data){
+  streams.forEach(s => {
+    const r = data.results[s.id];
+    const el = document.querySelector(`[data-computed="${s.id}"]`);
+    if (!el) return;
+    el.innerHTML = `
+      <div class="item"><span class="k">Moles</span><span class="v">${fmt(r.mol*1000,3)} mmol</span></div>
+      <div class="item"><span class="k">Chemical Volume</span><span class="v">${fmt(r.vol)} mL</span></div>
+      <div class="item"><span class="k">Paired Solvent Volume</span><span class="v">${fmt(r.solventVol)} mL</span></div>
+      <div class="item"><span class="k">Stream Total Volume</span><span class="v">${fmt(r.streamVol)} mL</span></div>
+      <div class="item"><span class="k">Concentration</span><span class="v">${fmt(r.conc)} M</span></div>
+      <div class="item"><span class="k">Flow Rate</span><span class="v">${fmt(r.q,6)} mL/min</span></div>
+    `;
+  });
+
+  const body = document.getElementById('summaryBody');
+  body.innerHTML = '';
+  streams.forEach(s => {
+    const r = data.results[s.id];
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${s.name}</td>
+      <td>${fmt(s.eq,2)}</td>
+      <td class="value">${fmt(r.mol*1000,3)}</td>
+      <td class="value">${fmt(r.streamVol)}</td>
+      <td class="value">${fmt(r.conc)}</td>
+      <td class="value">${fmt(r.q,6)}</td>
+      <td class="value">${fmt(r.prepVol)}</td>
+    `;
+    body.appendChild(tr);
+  });
+
+  document.getElementById('sumTotalVol').textContent = fmt(data.totalFormulationVol, 3);
+  document.getElementById('sumQtotal').textContent = fmt(data.qtotal, 4);
+  document.getElementById('sumVT').textContent = fmt(data.vt, 3);
+
+  const checks = streams.map(s => data.results[s.id].runCheck).filter(x => isFinite(x) && x > 0);
+  const avgCheck = checks.length ? checks.reduce((a,b)=>a+b,0)/checks.length : 0;
+  document.getElementById('sumCheck').textContent = fmt(avgCheck, 3);
+}
+
+function renderAll(){
+  renderStreams();
+  renderSolvents();
+  attachDynamicListeners();
+  refresh();
+}
+
+function refresh(){
+  readInputsIntoModel();
+  renderSolventsPairOptionsOnly();
+  const data = compute();
+  renderComputed(data);
+}
+
+function renderSolventsPairOptionsOnly(){
+  // update dropdown option labels without full re-render (keeps focus)
+  document.querySelectorAll('select[data-field="pair"]').forEach(sel => {
+    const id = sel.dataset.id;
+    const current = sel.value;
+    const options = streams.map(s => `<option value="${s.id}" ${s.id===current?'selected':''}>${s.name}</option>`).join('');
+    sel.innerHTML = options;
+  });
+}
+
+function attachDynamicListeners(){
+  document.querySelectorAll('#streams input').forEach(el => {
+    el.addEventListener('input', refresh);
+  });
+  document.querySelectorAll('#solvents input, #solvents select').forEach(el => {
+    el.addEventListener('input', refresh);
+    el.addEventListener('change', refresh);
+  });
+  document.querySelectorAll('[data-remove-stream]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.removeStream;
+      streams = streams.filter(s => s.id !== id);
+      solvents = solvents.filter(v => v.pairStreamId !== id || (solvents.forEach(()=>{}), true));
+      solvents.forEach(v => { if (v.pairStreamId === id) v.pairStreamId = streams[0].id; });
+      renderAll();
+    });
+  });
+  document.querySelectorAll('[data-remove-solvent]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.removeSolvent;
+      solvents = solvents.filter(v => v.id !== id);
+      renderAll();
+    });
+  });
+}
+
+document.getElementById('addReagent').addEventListener('click', () => {
+  addStream('Reagent');
+  renderAll();
+});
+
+document.getElementById('addSolvent').addEventListener('click', () => {
+  addSolvent(null, 0, streams[0].id);
+  renderAll();
+});
+
+document.querySelectorAll('#vr, #rt, #margin, #ndisc').forEach(el => {
+  el.addEventListener('input', refresh);
+});
+
+renderAll();
+</script>
+</body>
+</html>

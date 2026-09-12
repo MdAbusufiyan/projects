@@ -14,6 +14,7 @@ EXAM_TARGET = os.getenv("EXAM_TARGET", "http://127.0.0.1:8520")
 
 WEB_FOLDER = os.path.join(os.path.dirname(__file__), "web")
 MINDMAP_FOLDER = os.path.join(WEB_FOLDER, "branch")
+FlowChemistry_FOLDER = os.path.join(WEB_FOLDER, "branch")
 
 app = Flask(__name__, static_folder=WEB_FOLDER)
 COOKIE_JAR = cookiejar.CookieJar()
@@ -134,6 +135,10 @@ def index():
 @app.route("/Mindmap/")
 def mindmap_index():
     return send_from_directory(MINDMAP_FOLDER, "Mindmap.html")
+
+@app.route("/Flow Chemistry/")
+def flowchemistry_index():
+    return send_from_directory(MINDMAP_FOLDER, "FlowChemistry.html")
 
 @app.route("/Green Chemistry/")
 def green_index():
