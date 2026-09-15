@@ -11,4 +11,4 @@ uploads/
 logs/
 output/
 *.log
-.DS_Store
+.DS_Store 
