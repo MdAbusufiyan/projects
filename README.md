@@ -94,3 +94,23 @@ requirements/  # Shared Python dependencies
 - The Exam app uses SQLite locally by default.
 - The Mindmap app is intended for local use and demonstration.
 - If you need to deploy this to a server, the two apps should usually be run behind a proper reverse proxy such as Nginx.
+
+## SEO and Search Indexing
+
+SEO updates made on 2026-09-29:
+
+- The Mindmap server publishes `https://chooogle.com/robots.txt` and generates `https://chooogle.com/sitemap.xml` from its public-page list.
+- The sitemap includes the homepage, resume, public project pages, and SDS/MSDS PDF. The exam app is not included.
+- Public HTML responses receive canonical URLs and Open Graph URL metadata for `https://chooogle.com`.
+- Portfolio pages include page-specific descriptions and social preview metadata. The homepage includes Person structured data for Abu Sufiyan.
+- The Exam app and its proxied routes send `X-Robots-Tag: noindex, nofollow` so operational exam pages are not listed in search results. `robots.txt` allows crawlers to access these responses and read that directive.
+
+The Mindmap server defaults its canonical and sitemap base to `https://chooogle.com`. If the public hostname changes, set `PUBLIC_SITE_URL` before starting the server. For example, in Windows PowerShell:
+
+```powershell
+$env:PUBLIC_SITE_URL="https://chooogle.com"
+cd mindmap
+python server.py
+```
+
+After deploying, check that `/robots.txt` and `/sitemap.xml` load on the public domain, then submit `https://chooogle.com/sitemap.xml` in Google Search Console and Bing Webmaster Tools. Search engines decide when and whether to index pages; these settings make the public pages discoverable but do not guarantee rankings.

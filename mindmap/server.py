@@ -4,6 +4,8 @@ import re
 import threading
 import webbrowser
 from http import cookiejar
+from urllib.parse import quote
+from xml.sax.saxutils import escape
 from urllib import request as urllib_request
 from urllib.error import HTTPError, URLError
 
@@ -11,6 +13,7 @@ HOST = "127.0.0.1"
 PORT = 8765
 MASKED_ROUTE_ROOT = "/exam/"
 EXAM_TARGET = os.getenv("EXAM_TARGET", "http://127.0.0.1:8520")
+PUBLIC_SITE_URL = os.getenv("PUBLIC_SITE_URL", "https://chooogle.com").rstrip("/")
 
 WEB_FOLDER = os.path.join(os.path.dirname(__file__), "web")
 MINDMAP_FOLDER = os.path.join(WEB_FOLDER, "branch")
@@ -18,6 +21,36 @@ FlowChemistry_FOLDER = os.path.join(WEB_FOLDER, "branch")
 
 app = Flask(__name__, static_folder=WEB_FOLDER)
 COOKIE_JAR = cookiejar.CookieJar()
+
+PUBLIC_PAGES = [
+    ("/", "index.html"),
+    ("/resume.html", "resume.html"),
+    ("/Mindmap/", "Mindmap.html"),
+    ("/Flow Chemistry/", "FlowChemistry.html"),
+    ("/Green Chemistry/", "Green.html"),
+    ("/BGS/", "BGS_combined.html"),
+    ("/SDS and MSDS/", "SDSandMSDS.pdf"),
+]
+
+
+def _public_url(path):
+    base_url = PUBLIC_SITE_URL or request.url_root.rstrip("/")
+    return f"{base_url}{quote(path, safe='/')}"
+
+
+def _serve_public_page(folder, filename, path):
+    response = send_from_directory(folder, filename)
+    if filename.endswith(".html"):
+        response.direct_passthrough = False
+        canonical_url = escape(_public_url(path), {'"': "&quot;"})
+        canonical_tags = (
+            f'<link rel="canonical" href="{canonical_url}">\n'
+            f'<meta property="og:url" content="{canonical_url}">'
+        )
+        page = response.get_data(as_text=True)
+        page = re.sub(r"</head>", f"{canonical_tags}\n</head>", page, count=1, flags=re.IGNORECASE)
+        response.set_data(page)
+    return response
 
 
 class _NoRedirectHandler(urllib_request.HTTPRedirectHandler):
@@ -97,6 +130,7 @@ def _proxy_to_exam(path, method, query_string, headers, data):
             response = Response(body, status=upstream_response.status, headers=headers_out)
             response.autocorrect_location_header = False
             response.headers["Content-Type"] = content_type or "text/plain"
+            response.headers["X-Robots-Tag"] = "noindex, nofollow"
             return response
 
     except HTTPError as exc:
@@ -121,6 +155,7 @@ def _proxy_to_exam(path, method, query_string, headers, data):
         response = Response(body, status=exc.code, headers=headers_out)
         response.autocorrect_location_header = False
         response.headers["Content-Type"] = exc.headers.get("Content-Type", "text/plain")
+        response.headers["X-Robots-Tag"] = "noindex, nofollow"
         return response
 
     except URLError as exc:
@@ -129,28 +164,50 @@ def _proxy_to_exam(path, method, query_string, headers, data):
 
 @app.route("/")
 def index():
-    return send_from_directory(WEB_FOLDER, "index.html")
+    return _serve_public_page(WEB_FOLDER, "index.html", "/")
+
+
+@app.route("/robots.txt")
+def robots_txt():
+    sitemap_url = escape(_public_url("/sitemap.xml"))
+    body = f"User-agent: *\nAllow: /\nSitemap: {sitemap_url}\n"
+    return Response(body, mimetype="text/plain")
+
+
+@app.route("/sitemap.xml")
+def sitemap_xml():
+    locations = "\n".join(
+        f"  <url><loc>{escape(_public_url(path))}</loc></url>"
+        for path, _ in PUBLIC_PAGES
+    )
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{locations}\n"
+        "</urlset>\n"
+    )
+    return Response(body, mimetype="application/xml")
 
 
 @app.route("/Mindmap/")
 def mindmap_index():
-    return send_from_directory(MINDMAP_FOLDER, "Mindmap.html")
+    return _serve_public_page(MINDMAP_FOLDER, "Mindmap.html", "/Mindmap/")
 
 @app.route("/Flow Chemistry/")
 def flowchemistry_index():
-    return send_from_directory(MINDMAP_FOLDER, "FlowChemistry.html")
+    return _serve_public_page(MINDMAP_FOLDER, "FlowChemistry.html", "/Flow Chemistry/")
 
 @app.route("/Green Chemistry/")
 def green_index():
-    return send_from_directory(MINDMAP_FOLDER, "Green.html")
+    return _serve_public_page(MINDMAP_FOLDER, "Green.html", "/Green Chemistry/")
 
 @app.route("/BGS/")
 def bgs_index():
-    return send_from_directory(MINDMAP_FOLDER, "BGS_combined.html")
+    return _serve_public_page(MINDMAP_FOLDER, "BGS_combined.html", "/BGS/")
 
 @app.route("/SDS and MSDS/")
 def sds_mds_index():
-    return send_from_directory(MINDMAP_FOLDER, "SDSandMSDS.pdf")
+    return _serve_public_page(MINDMAP_FOLDER, "SDSandMSDS.pdf", "/SDS and MSDS/")
 
 @app.route("/mindmap/<path:path>")
 def mindmap_static(path):
@@ -172,6 +229,9 @@ def exam_proxy(path=""):
 
 @app.route("/<path:path>", methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"])
 def static_files(path):
+    if path == "resume.html":
+        return _serve_public_page(WEB_FOLDER, path, "/resume.html")
+
     local_path = os.path.join(WEB_FOLDER, path)
 
     if os.path.exists(local_path) and not os.path.isdir(local_path):

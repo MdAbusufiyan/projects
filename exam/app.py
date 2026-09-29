@@ -54,6 +54,7 @@ def create_app():
     @app.after_request
     def set_security_headers(response):
         response.headers["X-Content-Type-Options"] = "nosniff"
+        response.headers["X-Robots-Tag"] = "noindex, nofollow"
         # PDFs are intentionally embedded only by pages on this same site.
         # DENY blocks even same-origin iframes and leaves the preview blank.
         if request.endpoint in {"professor.case_study_pdf", "candidate.case_study_pdf"}:
