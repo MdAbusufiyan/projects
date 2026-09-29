@@ -40,5 +40,12 @@
     "url": "/exam/", 
     "status": "Open Source",
     "license": "Apache-2.0"
+  },
+  {
+    "name": "Brilliant Grammar School & PU College",
+    "description": "Empowering Minds,Shaping Futures",
+    "url": "/BGS/", 
+    "status": "Educational",
+    "license": "All Rights Reserved"
   }
 ]

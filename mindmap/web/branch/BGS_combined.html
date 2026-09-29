@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BGS | School & PU College</title>
+
+    <!-- Fonts and icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwUEQp1/8+5kE2l1/sd8T0PZld3MZJt6K0x5xWQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <style>
+        /**
+         * BGS School & PU College
+         * Main stylesheet for the complete landing page.
+         */
+
+        :root {
+            --primary-color: #003366;
+            --secondary-color: #ffcc00;
+            --text-dark: #333333;
+            --text-light: #ffffff;
+            --bg-light: #f4f7f6;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-card: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            background: var(--primary-color);
+            color: var(--text-light);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .logo span {
+            color: var(--secondary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        .cta-btn {
+            background: var(--secondary-color);
+            color: var(--primary-color) !important;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600 !important;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-1px);
+            opacity: 0.95;
+        }
+
+        .burger {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--text-light);
+            background-image: linear-gradient(rgba(0, 51, 102, 0.72), rgba(0, 51, 102, 0.72)),
+                url('https://images.unsplash.com/photo-1523050854058-86af67f6175a?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 40px 16px;
+        }
+
+        .hero-content {
+            max-width: 900px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            margin-bottom: 1.25rem;
+            line-height: 1.1;
+        }
+
+        .hero-content p {
+            font-size: 1.15rem;
+            margin-bottom: 2rem;
+            color: rgba(255, 255, 255, 0.92);
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            display: inline-block;
+            padding: 12px 30px;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-secondary {
+            border-color: var(--text-light);
+            color: var(--text-light);
+            background: transparent;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-light);
+            color: var(--primary-color);
+        }
+
+        .about,
+        .gallery-section,
+        .academics,
+        .facilities {
+            padding: 80px 10%;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            text-align: center;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            align-items: center;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+        }
+
+        .about-text {
+            padding: 2rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            color: #4a4a4a;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            min-height: 320px;
+            object-fit: cover;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+            padding: 50px 10%;
+            background: var(--bg-light);
+            text-align: center;
+        }
+
+        .stat-item {
+            background: white;
+            border-radius: 14px;
+            padding: 2rem 1rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-item i {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .stat-item h3 {
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+
+        .academic-container,
+        .facility-grid {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .academic-card,
+        .facility-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-soft);
+            flex: 1 1 320px;
+            max-width: 500px;
+            transition: transform 0.3s ease;
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        .academic-card:hover,
+        .facility-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .academic-card i,
+        .facility-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .academic-card h3,
+        .facility-card h3 {
+            margin-bottom: 0.8rem;
+            color: var(--primary-color);
+        }
+
+        .academic-card ul,
+        .facility-card ul {
+            list-style: none;
+            margin-top: 1rem;
+            text-align: left;
+        }
+
+        .academic-card li,
+        .facility-card li {
+            margin: 0.7rem 0;
+            position: relative;
+            padding-left: 1.4rem;
+        }
+
+        .academic-card li::before,
+        .facility-card li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .gallery-section {
+            background-color: var(--bg-light);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+        }
+
+        .admin-toggle-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .admin-toggle-container button {
+            background: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            cursor: pointer;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+
+        .admin-panel {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-card);
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+            text-align: left;
+            border-top: 5px solid var(--secondary-color);
+            display: none;
+        }
+
+        .admin-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 8px 15px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .admin-form-box {
+            display: block;
+        }
+
+        .admin-form-box h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .admin-form-box input,
+        .admin-form-box select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            background: #fff;
+        }
+
+        .subsection-heading {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin: 2rem 0 1.5rem;
+            text-align: left;
+            border-left: 5px solid var(--secondary-color);
+            padding-left: 10px;
+        }
+
+        .gallery-grid,
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .gallery-item,
+        .achievement-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .gallery-media {
+            width: 100%;
+            height: 210px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .gallery-info,
+        .achievement-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 15px;
+        }
+
+        .gallery-info h4,
+        .achievement-info h4 {
+            color: var(--primary-color);
+            font-size: 1.08rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .achievement-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .achievement-info p {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .delete-btn {
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            display: none;
+        }
+
+        body.admin-active .delete-btn {
+            display: inline-block;
+        }
+
+        .facility-card p {
+            color: #4a4a4a;
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: var(--text-light);
+            padding: 50px 10% 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3,
+        .footer-section h4 {
+            margin-bottom: 0.8rem;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+
+        .footer-section p,
+        .footer-section li {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: white;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 72px;
+                left: 0;
+                width: 100%;
+                background: var(--primary-color);
+                padding: 20px 0;
+                text-align: center;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .burger {
+                display: block;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-content h1 {
+                font-size: 2.4rem;
+            }
+
+            .section-title,
+            .subsection-heading {
+                text-align: center;
+            }
+
+            .subsection-heading {
+                border-left: none;
+                border-bottom: 4px solid var(--secondary-color);
+                padding-left: 0;
+                padding-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!--
+        BGS School & PU College landing page.
+        This single-file version preserves the original design and admin-driven gallery features.
+    -->
+
+    <nav class="navbar">
+        <div class="logo">Brilliant Grammar School<span> & PU College</span></div>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#academics">Academics</a></li>
+            <li><a href="#facilities">Facilities</a></li>
+            <li><a href="#contact" class="cta-btn">Apply Now</a></li>
+        </ul>
+
+        <button class="burger" id="burger" type="button" aria-label="Toggle navigation">
+            <i class="fas fa-bars"></i>
+        </button>
+    </nav>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <h1>Empowering Minds,<br>Shaping Futures</h1>
+                <p>Providing excellence in education from Primary School to Pre-University College.</p>
+                <div class="hero-btns">
+                    <a href="#academics" class="btn-primary">Explore Courses</a>
+                    <a href="#contact" class="btn-secondary">Contact Us</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="about" id="about">
+            <h2 class="section-title">About Our Institution</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Brilliant Grammar School & PU College is a learning community devoted to excellence, discipline, and character-building. We combine academic rigor with value-based education to nurture confident and capable future leaders.</p>
+                    <p>Our mission is to provide a supportive environment where students can grow intellectually, creatively, and socially while preparing for competitive higher education and real-world responsibilities.</p>
+                    <p>With a strong focus on innovation, mentorship, and holistic development, we help students thrive both inside and outside the classroom.</p>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80" alt="School campus">
+                </div>
+            </div>
+        </section>
+
+        <section class="gallery-section" id="gallery">
+            <h2 class="section-title">Campus Life & Achievements</h2>
+            <p class="section-subtitle">Explore photos and videos of our campus, and celebrate our students' proud milestones.</p>
+
+            <div class="admin-toggle-container">
+                <button id="adminToggleBtn" class="btn-secondary" type="button">🔒 Admin Mode: OFF</button>
+            </div>
+
+            <div id="adminPanel" class="admin-panel">
+                <h3>Admin Management Panel</h3>
+                <div class="admin-tabs">
+                    <button type="button" class="tab-btn active" data-tab="media">Manage Media</button>
+                    <button type="button" class="tab-btn" data-tab="achievement">Manage Achievements</button>
+                </div>
+
+                <div id="mediaAdminForm" class="admin-form-box">
+                    <h4>Add Campus Photo or Video</h4>
+                    <form id="mediaForm">
+                        <div class="form-group">
+                            <input type="text" id="mediaTitle" placeholder="Title (e.g., Annual Science Exhibition)" required>
+                        </div>
+                        <div class="form-group">
+                            <select id="mediaType">
+                                <option value="image">Photo</option>
+                                <option value="video">Video</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <input type="url" id="mediaUrl" placeholder="Direct Image/Video URL" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Media Item</button>
+                    </form>
+                </div>
+
+                <div id="achievementAdminForm" class="admin-form-box" style="display: none;">
+                    <h4>Add Student Achievement</h4>
+                    <form id="achievementForm">
+                        <div class="form-group">
+                            <input type="text" id="studentName" placeholder="Student Name (e.g., Priya Sharma)" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="achievementTitle" placeholder="Achievement/Award (e.g., State Rank 1 - CET)" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="url" id="studentPhotoUrl" placeholder="Student Photo URL" required>
+                        </div>
+                        <button type="submit" class="btn-primary">Add Achievement</button>
+                    </form>
+                </div>
+            </div>
+
+            <h3 class="subsection-heading">Campus Gallery</h3>
+            <div class="gallery-grid" id="galleryGrid"></div>
+
+            <h3 class="subsection-heading" style="margin-top: 60px;">Student Achievements</h3>
+            <div class="achievements-grid" id="achievementsGrid"></div>
+        </section>
+
+        <section class="stats" aria-label="School statistics">
+            <div class="stat-item">
+                <i class="fas fa-user-graduate"></i>
+                <h3>2000+</h3>
+                <p>Students</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <h3>100+</h3>
+                <p>Expert Teachers</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-trophy"></i>
+                <h3>50+</h3>
+                <p>Awards Won</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-book-open"></i>
+                <h3>15+</h3>
+                <p>Labs & Library</p>
+            </div>
+        </section>
+
+        <section class="academics" id="academics">
+            <h2 class="section-title">Our Academic Wings</h2>
+            <div class="academic-container">
+                <div class="academic-card">
+                    <i class="fas fa-school"></i>
+                    <h3>Class 10 Schooling</h3>
+                    <p>Focusing on foundational growth, creative learning, and holistic development for children from Kindergarten to Grade 10.</p>
+                    <ul>
+                        <li>CBSE/State Curriculum</li>
+                        <li>Activity-Based Learning</li>
+                        <li>Sports & Arts</li>
+                    </ul>
+                </div>
+
+                <div class="academic-card">
+                    <i class="fas fa-university"></i>
+                    <h3>PU College (11th & 12th)</h3>
+                    <p>Specialized coaching for Science, Commerce, and Arts to prepare students for competitive exams and university.</p>
+                    <ul>
+                        <li>Advanced Science Labs</li>
+                        <li>Career Counseling</li>
+                        <li>CET/NEET/JEE Coaching</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="facilities" id="facilities">
+            <h2 class="section-title">Campus Facilities</h2>
+            <div class="facility-grid">
+                <div class="facility-card">
+                    <i class="fas fa-flask"></i>
+                    <h3>Modern Labs</h3>
+                    <p>Well-equipped science and computer laboratories that support real-world experimentation and research-based learning.</p>
+                </div>
+                <div class="facility-card">
+                    <i class="fas fa-book-reader"></i>
+                    <h3>Library & Resources</h3>
+                    <p>A rich academic library with textbooks, reference material, digital content, and a comfortable study environment.</p>
+                </div>
+                <div class="facility-card">
+                    <i class="fas fa-football-ball"></i>
+                    <h3>Sports & Arts</h3>
+                    <p>Indoor and outdoor facilities that encourage physical wellness, teamwork, creativity, and leadership.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>B G School & PU College</h3>
+                <p>Nurturing excellence since 2009. The leading institution for quality education.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Student Portal</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Address</h4>
+                <p>Brilliant Grammar School & PU College</p>
+                <p>Ghatboral Road, Tq. Humanabad</p>
+                <p>Dist. Bidar, Karnataka-585418</p>
+                <p>Phone: +91 9964044028</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            © 2026 Brilliant Grammar School & PU College. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        /**
+         * School website interactions and admin management panel logic.
+         */
+        document.addEventListener('DOMContentLoaded', () => {
+            const burger = document.getElementById('burger');
+            const navLinks = document.getElementById('navLinks');
+            const adminToggleBtn = document.getElementById('adminToggleBtn');
+            const adminPanel = document.getElementById('adminPanel');
+            const galleryGrid = document.getElementById('galleryGrid');
+            const achievementsGrid = document.getElementById('achievementsGrid');
+
+            if (burger && navLinks) {
+                burger.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                });
+
+                document.querySelectorAll('.nav-links a').forEach((link) => {
+                    link.addEventListener('click', () => {
+                        navLinks.classList.remove('active');
+                    });
+                });
+            }
+
+            let isAdmin = false;
+
+            if (adminToggleBtn && adminPanel) {
+                adminToggleBtn.addEventListener('click', () => {
+                    if (!isAdmin) {
+                        const pin = window.prompt('Enter Admin Password:');
+                        if (pin === 'admin123') {
+                            isAdmin = true;
+                            document.body.classList.add('admin-active');
+                            adminPanel.style.display = 'block';
+                            adminToggleBtn.textContent = '🔓 Admin Mode: ON';
+                            adminToggleBtn.style.background = 'var(--primary-color)';
+                            adminToggleBtn.style.color = 'white';
+                        } else if (pin !== null) {
+                            window.alert('Incorrect password!');
+                        }
+                    } else {
+                        isAdmin = false;
+                        document.body.classList.remove('admin-active');
+                        adminPanel.style.display = 'none';
+                        adminToggleBtn.textContent = '🔒 Admin Mode: OFF';
+                        adminToggleBtn.style.background = 'transparent';
+                        adminToggleBtn.style.color = 'var(--primary-color)';
+                    }
+                });
+            }
+
+            const galleryItems = JSON.parse(localStorage.getItem('bgs_gallery')) || [
+                {
+                    title: 'Campus Main Building',
+                    type: 'image',
+                    url: 'https://images.unsplash.com/photo-1523050854058-86af67f6175a?auto=format&fit=crop&w=600&q=80'
+                }
+            ];
+
+            const achievements = JSON.parse(localStorage.getItem('bgs_achievements')) || [
+                {
+                    name: 'Rahul Sharma',
+                    title: 'State Rank 1 - Science Olympiad',
+                    url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80'
+                }
+            ];
+
+            function renderGallery() {
+                if (!galleryGrid) return;
+
+                galleryGrid.innerHTML = '';
+
+                if (galleryItems.length === 0) {
+                    galleryGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #666;">No media uploaded yet.</p>';
+                    return;
+                }
+
+                galleryItems.forEach((item, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'gallery-item';
+
+                    const media = item.type === 'image'
+                        ? `<img src="${item.url}" class="gallery-media" alt="${item.title}">`
+                        : `<video src="${item.url}" class="gallery-media" controls></video>`;
+
+                    card.innerHTML = `
+                        ${media}
+                        <div class="gallery-info">
+                            <h4>${item.title}</h4>
+                            <button class="delete-btn" type="button" data-gallery-index="${index}">Delete</button>
+                        </div>
+                    `;
+
+                    galleryGrid.appendChild(card);
+                });
+            }
+
+            function renderAchievements() {
+                if (!achievementsGrid) return;
+
+                achievementsGrid.innerHTML = '';
+
+                if (achievements.length === 0) {
+                    achievementsGrid.innerHTML = '<p style="grid-column: 1 / -1; color: #666;">No achievements added yet.</p>';
+                    return;
+                }
+
+                achievements.forEach((ach, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'achievement-card';
+
+                    card.innerHTML = `
+                        <img src="${ach.url}" alt="${ach.name}">
+                        <div class="achievement-info">
+                            <div>
+                                <h4>${ach.name}</h4>
+                                <p>${ach.title}</p>
+                            </div>
+                            <button class="delete-btn" type="button" data-achievement-index="${index}">Delete</button>
+                        </div>
+                    `;
+
+                    achievementsGrid.appendChild(card);
+                });
+            }
+
+            function renderAll() {
+                renderGallery();
+                renderAchievements();
+            }
+
+            function handleMediaSubmit(event) {
+                event.preventDefault();
+                const titleInput = document.getElementById('mediaTitle');
+                const typeInput = document.getElementById('mediaType');
+                const urlInput = document.getElementById('mediaUrl');
+
+                if (!titleInput || !typeInput || !urlInput) return;
+
+                const title = titleInput.value.trim();
+                const type = typeInput.value;
+                const url = urlInput.value.trim();
+
+                if (title && url) {
+                    galleryItems.unshift({ title, type, url });
+                    localStorage.setItem('bgs_gallery', JSON.stringify(galleryItems));
+                    renderAll();
+                    event.target.reset();
+                }
+            }
+
+            function handleAchievementSubmit(event) {
+                event.preventDefault();
+                const studentNameInput = document.getElementById('studentName');
+                const achievementTitleInput = document.getElementById('achievementTitle');
+                const studentPhotoUrlInput = document.getElementById('studentPhotoUrl');
+
+                if (!studentNameInput || !achievementTitleInput || !studentPhotoUrlInput) return;
+
+                const name = studentNameInput.value.trim();
+                const title = achievementTitleInput.value.trim();
+                const url = studentPhotoUrlInput.value.trim();
+
+                if (name && title && url) {
+                    achievements.unshift({ name, title, url });
+                    localStorage.setItem('bgs_achievements', JSON.stringify(achievements));
+                    renderAll();
+                    event.target.reset();
+                }
+            }
+
+            const mediaForm = document.getElementById('mediaForm');
+            const achievementForm = document.getElementById('achievementForm');
+
+            if (mediaForm) {
+                mediaForm.addEventListener('submit', handleMediaSubmit);
+            }
+
+            if (achievementForm) {
+                achievementForm.addEventListener('submit', handleAchievementSubmit);
+            }
+
+            document.addEventListener('click', (event) => {
+                const deleteGalleryButton = event.target.closest('[data-gallery-index]');
+                if (deleteGalleryButton) {
+                    const index = Number(deleteGalleryButton.getAttribute('data-gallery-index'));
+                    if (!Number.isNaN(index)) {
+                        galleryItems.splice(index, 1);
+                        localStorage.setItem('bgs_gallery', JSON.stringify(galleryItems));
+                        renderAll();
+                    }
+                }
+
+                const deleteAchievementButton = event.target.closest('[data-achievement-index]');
+                if (deleteAchievementButton) {
+                    const index = Number(deleteAchievementButton.getAttribute('data-achievement-index'));
+                    if (!Number.isNaN(index)) {
+                        achievements.splice(index, 1);
+                        localStorage.setItem('bgs_achievements', JSON.stringify(achievements));
+                        renderAll();
+                    }
+                }
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            const mediaAdminForm = document.getElementById('mediaAdminForm');
+            const achievementAdminForm = document.getElementById('achievementAdminForm');
+
+            function switchAdminTab(tabName) {
+                tabButtons.forEach((button) => {
+                    const isActive = button.dataset.tab === tabName;
+                    button.classList.toggle('active', isActive);
+                });
+
+                if (mediaAdminForm && achievementAdminForm) {
+                    const showMedia = tabName === 'media';
+                    mediaAdminForm.style.display = showMedia ? 'block' : 'none';
+                    achievementAdminForm.style.display = showMedia ? 'none' : 'block';
+                }
+            }
+
+            tabButtons.forEach((button) => {
+                button.addEventListener('click', () => switchAdminTab(button.dataset.tab));
+            });
+
+            renderAll();
+        });
+    </script>
+</body>
+</html>

@@ -144,6 +144,10 @@ def flowchemistry_index():
 def green_index():
     return send_from_directory(MINDMAP_FOLDER, "Green.html")
 
+@app.route("/BGS/")
+def bgs_index():
+    return send_from_directory(MINDMAP_FOLDER, "BGS_combined.html")
+
 @app.route("/SDS and MSDS/")
 def sds_mds_index():
     return send_from_directory(MINDMAP_FOLDER, "SDSandMSDS.pdf")
